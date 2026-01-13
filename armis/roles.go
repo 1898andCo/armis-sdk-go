@@ -8,7 +8,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"net/url"
 	"strconv"
 )
@@ -92,7 +91,6 @@ func (c *Client) CreateRole(ctx context.Context, role RoleSettings) (bool, error
 
 	res, err := c.doRequest(req)
 	if err != nil {
-		slog.Error("CreateRole request failed", "error", err, "role", bytes.NewBuffer(roleData).String())
 		return false, fmt.Errorf("failed to create role: %w", err)
 	}
 
