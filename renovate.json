@@ -1,0 +1,49 @@
+{
+  "extends": [
+    "config:recommended",
+    ":ignoreUnstable"
+  ],
+  "github-actions": {
+    "enabled": true,
+    "pinDigests": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": [
+        "gomod"
+      ],
+      "enabled": true,
+      "groupName": "Go dependencies",
+      "schedule": "at any time"
+    },
+    {
+      "matchSourceUrls": [
+        "https://github.com/**"
+      ],
+      "prBodyDefinitions": {
+        "OpenSSF": "[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/{{sourceRepo}}/badge)](https://securityscorecards.dev/viewer/?uri=github.com/{{sourceRepo}})"
+      },
+      "prBodyColumns": [
+        "Package",
+        "Type",
+        "Update",
+        "Change",
+        "Pending",
+        "OpenSSF"
+      ]
+    },
+    {
+      "description": "Only update GitHub Actions when stable and aged",
+      "matchManagers": ["github-actions"],
+      "minimumReleaseAge": "3 days",
+      "allowedVersions": "!/-(alpha|beta|rc|test)/"
+    }
+  ],
+  "labels": [
+    "dependencies",
+    "golang",
+    "renovate"
+  ],
+  "commitMessageAction": "chore",
+  "dependencyDashboard": true
+}
