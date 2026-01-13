@@ -6,9 +6,7 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: ^vendor/
       - id: end-of-file-fixer
-        exclude: ^vendor/
       - id: check-yaml
         args: [--allow-multiple-documents]
       - id: check-added-large-files
@@ -20,10 +18,8 @@ repos:
     hooks:
       - id: go-fumpt
         args: [-w]
-        exclude: ^vendor/
 
       - id: go-build-mod
-        exclude: ^vendor/
 
       - id: go-mod-tidy
 
@@ -42,7 +38,6 @@ repos:
         language: system
         types: [go]
         pass_filenames: false
-        exclude: ^vendor/
 
       - id: go-test
         name: go test
