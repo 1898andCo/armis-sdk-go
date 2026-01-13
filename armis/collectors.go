@@ -77,7 +77,7 @@ func (c *Client) CreateCollector(ctx context.Context, collector CreateCollectorS
 	}
 
 	// Create a new request
-	req, err := c.newRequest(ctx, "POST", fmt.Sprintf("/api/%s/collectors/", c.apiVersion), bytes.NewBuffer(collectorData))
+	req, err := c.newRequest(ctx, "POST", fmt.Sprintf("/api/%s/collectors/", c.apiVersion), bytes.NewReader(collectorData))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request for CreateCollector: %w", err)
 	}
