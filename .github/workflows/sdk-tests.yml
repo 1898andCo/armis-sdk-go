@@ -1,0 +1,59 @@
+name: Armis SDK Tests
+
+# This GitHub action runs your tests for each pull request and push.
+on:
+  pull_request:
+    paths:
+      - "armis/**.go"
+      - "go.mod"
+      - "go.sum"
+      - ".github/workflows/sdk-tests.yml"
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+      - run: go mod tidy
+      - run: go mod download
+      - run: go build -v ./...
+
+  sdk-tests:
+    name: Armis SDK Unit Tests
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+      - name: Download Dependencies
+        run: go mod download
+      - name: Run SDK Tests
+        run: go test -v -race -coverprofile=coverage.out ./armis/... | tee sdk-test.log
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: sdk-test-log
+          path: sdk-test.log
+      - name: Upload Coverage
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: coverage
+          path: coverage.out
