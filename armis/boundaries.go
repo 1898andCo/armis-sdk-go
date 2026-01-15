@@ -10,6 +10,7 @@ import (
 	"net/url"
 )
 
+// GetBoundaryByID retrieves a single boundary from Armis using the boundary's ID.
 func (c *Client) GetBoundaryByID(ctx context.Context, boundaryID string) (*BoundarySettings, error) {
 	if boundaryID == "" {
 		return nil, fmt.Errorf("%w", ErrBoundaryID)
@@ -39,6 +40,7 @@ func (c *Client) GetBoundaryByID(ctx context.Context, boundaryID string) (*Bound
 	return &response.Data, nil
 }
 
+// GetBoundaries retrieves all boundaries from Armis.
 func (c *Client) GetBoundaries(ctx context.Context) ([]BoundarySettings, error) {
 	// Create a new request
 	req, err := c.newRequest(ctx, "GET", fmt.Sprintf("/api/%s/boundaries/", c.apiVersion), nil)

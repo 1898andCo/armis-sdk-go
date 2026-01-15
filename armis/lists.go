@@ -9,6 +9,7 @@ import (
 	"fmt"
 )
 
+// GetLists retrieves all lists from Armis.
 func (c *Client) GetLists(ctx context.Context) ([]ListSettings, error) {
 	// Create a new request
 	req, err := c.newRequest(ctx, "GET", fmt.Sprintf("/api/%s/lists/", c.apiVersion), nil)

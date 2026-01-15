@@ -9,6 +9,7 @@ import (
 	"fmt"
 )
 
+// GetSites retrieves all sites from Armis.
 func (c *Client) GetSites(ctx context.Context) ([]SiteSettings, error) {
 	// Create a new request
 	req, err := c.newRequest(ctx, "GET", fmt.Sprintf("/api/%s/sites/", c.apiVersion), nil)
