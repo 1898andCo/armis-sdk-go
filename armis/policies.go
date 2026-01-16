@@ -114,6 +114,7 @@ func (c *Client) GetPolicy(ctx context.Context, policyID string) (GetPolicySetti
 	return response.Data, nil
 }
 
+// GetAllPolicies retrieves all policies from Armis with automatic pagination.
 func (c *Client) GetAllPolicies(ctx context.Context) ([]SinglePolicy, error) {
 	var allPolicies []SinglePolicy
 	from := 0

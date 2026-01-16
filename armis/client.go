@@ -113,6 +113,8 @@ type APIError struct {
 	Body       []byte
 }
 
+// Error implements the error interface, returning a formatted error message
+// containing the HTTP status code and its text description.
 func (e *APIError) Error() string {
 	return fmt.Sprintf("armis: API error %d: %s", e.StatusCode, http.StatusText(e.StatusCode))
 }

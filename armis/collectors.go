@@ -11,6 +11,7 @@ import (
 	"net/url"
 )
 
+// GetCollectorByID retrieves a single collector from Armis using the collector's ID.
 func (c *Client) GetCollectorByID(ctx context.Context, collectorID string) (*CollectorSettings, error) {
 	if collectorID == "" {
 		return nil, fmt.Errorf("%w", ErrCollectorID)
@@ -40,6 +41,7 @@ func (c *Client) GetCollectorByID(ctx context.Context, collectorID string) (*Col
 	return &response.Data, nil
 }
 
+// GetCollectors retrieves all collectors from Armis.
 func (c *Client) GetCollectors(ctx context.Context) ([]CollectorSettings, error) {
 	// Create a new request
 	req, err := c.newRequest(ctx, "GET", fmt.Sprintf("/api/%s/collectors/", c.apiVersion), nil)
@@ -62,6 +64,7 @@ func (c *Client) GetCollectors(ctx context.Context) ([]CollectorSettings, error)
 	return response.Data.Collectors, nil
 }
 
+// CreateCollector creates a new collector in Armis.
 func (c *Client) CreateCollector(ctx context.Context, collector CreateCollectorSettings) (*NewCollectorSettings, error) {
 	if collector.Name == "" {
 		return nil, fmt.Errorf("%w", ErrCollectorName)
@@ -97,6 +100,7 @@ func (c *Client) CreateCollector(ctx context.Context, collector CreateCollectorS
 	return &response.Data, nil
 }
 
+// UpdateCollector updates an existing collector in Armis.
 func (c *Client) UpdateCollector(ctx context.Context, collectorID string, collector UpdateCollectorSettings) (*CollectorSettings, error) {
 	if collectorID == "" {
 		return nil, fmt.Errorf("%w", ErrCollectorID)
@@ -139,6 +143,7 @@ func (c *Client) UpdateCollector(ctx context.Context, collectorID string, collec
 	return &response.Data, nil
 }
 
+// DeleteCollector removes a collector from Armis.
 func (c *Client) DeleteCollector(ctx context.Context, collectorID string) (bool, error) {
 	if collectorID == "" {
 		return false, fmt.Errorf("%w", ErrCollectorID)
