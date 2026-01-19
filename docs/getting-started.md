@@ -14,29 +14,39 @@ package main
 import (
     "context"
     "fmt"
+    "log"
     "os"
 
     "github.com/1898andCo/armis-sdk-go/armis"
 )
 
 func main() {
-    client, err := armis.NewClient(os.Getenv("ARMIS_API_KEY"))
+    client, err := armis.NewClient(
+        os.Getenv("ARMIS_API_KEY"),
+        armis.WithAPIURL("https://your-instance.armis.com"),
+    )
     if err != nil {
-        panic(err)
+        log.Fatal(err)
     }
 
-    // You're ready to go!
-    users, _ := client.GetUsers(context.Background())
+    users, err := client.GetUsers(context.Background())
+    if err != nil {
+        log.Fatal(err)
+    }
+
     fmt.Printf("Found %d users\n", len(users))
 }
 ```
 
-## Using a Custom Armis Instance
+> **Note:** Replace `https://your-instance.armis.com` with your organization's Armis instance URL.
+
+## Configuration Options
 
 ```go
 client, err := armis.NewClient(
     os.Getenv("ARMIS_API_KEY"),
-    armis.WithAPIURL("https://your-company.armis.com"),
+    armis.WithAPIURL("https://your-instance.armis.com"),  // Your Armis instance URL
+    armis.WithAPIVersion("v1"),                           // API version (default: v1)
 )
 ```
 

@@ -5,12 +5,6 @@ SPDX-License-Identifier: Apache-2.0
 
 # Security Policy
 
-## Supported Versions
-
-| Version | Supported          |
-| ------- | ------------------ |
-| latest  | :white_check_mark: |
-
 ## Reporting a Vulnerability
 
 We take security vulnerabilities seriously. If you discover a security issue in this project, please report it responsibly.
