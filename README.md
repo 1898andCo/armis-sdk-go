@@ -12,7 +12,7 @@ A Go client library for the [Armis Centrix](https://www.armis.com/) API. This SD
 
 ## Requirements
 
-- [Go](https://golang.org/doc/install) >= 1.22
+- [Go](https://golang.org/doc/install) >= 1.25
 
 ## Installation
 

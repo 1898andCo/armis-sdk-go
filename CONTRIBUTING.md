@@ -27,7 +27,7 @@ Thank you for your interest in contributing to the Armis Go SDK!
 
 ### Prerequisites
 
-- Go 1.22 or later
+- Go 1.25 or later
 - [golangci-lint](https://golangci-lint.run/usage/install/)
 - [gofumpt](https://github.com/mvdan/gofumpt)
 - [pre-commit](https://pre-commit.com/)
