@@ -131,11 +131,16 @@ func (c *Client) newRequest(ctx context.Context, method, path string, body io.Re
 	// For long running processes, tokens will expire with subsequent API calls.
 	// The token needs to be validated before each request.
 	c.mu.RLock()
-	if c.accessTokenExpires.Before(time.Now()) {
+	expired := c.accessTokenExpires.Before(time.Now())
+	c.mu.RUnlock()
+
+	if expired {
 		if err := c.authenticate(ctx); err != nil {
 			return nil, fmt.Errorf("%w: %v", ErrAuthFailed, err)
 		}
 	}
+
+	c.mu.RLock()
 	token := c.accessToken
 	c.mu.RUnlock()
 
