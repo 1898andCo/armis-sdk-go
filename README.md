@@ -1,11 +1,3 @@
-<a href="https://www.armis.com">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://www.armis.com/wp-content/uploads/2024/02/armis-logo-white.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://www.armis.com/wp-content/uploads/2020/03/Armis-Logo-1.svg">
-    <img src="https://www.armis.com/wp-content/uploads/2020/03/Armis-Logo-1.svg" alt="Armis logo" title="Armis" align="right" height="50">
-  </picture>
-</a>
-
 # Armis Go SDK
 
 A Go client library for the [Armis Centrix](https://www.armis.com/) API. This SDK provides a simple, idiomatic, and thread-safe way to interact with the Armis platform.
@@ -64,6 +56,13 @@ func main() {
 ## Configuration Options
 
 ```go
+import (
+    "net/http"
+    "time"
+
+    "github.com/1898andCo/armis-sdk-go/armis"
+)
+
 client, err := armis.NewClient(
     apiKey,
     armis.WithAPIURL("https://your-instance.armis.com"),  // Custom API URL
