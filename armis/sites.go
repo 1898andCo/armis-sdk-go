@@ -29,5 +29,9 @@ func (c *Client) GetSites(ctx context.Context) ([]SiteSettings, error) {
 		return nil, fmt.Errorf("failed to parse sites response: %w", err)
 	}
 
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
 	return response.Data.Sites, nil
 }

@@ -38,6 +38,10 @@ func (c *Client) GetCollectorByID(ctx context.Context, collectorID string) (*Col
 		return nil, fmt.Errorf("failed to parse collector response: %w", err)
 	}
 
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
 	return &response.Data, nil
 }
 
@@ -59,6 +63,10 @@ func (c *Client) GetCollectors(ctx context.Context) ([]CollectorSettings, error)
 	var response CollectorAPIResponse
 	if err := json.Unmarshal(res, &response); err != nil {
 		return nil, fmt.Errorf("failed to parse collectors response: %w", err)
+	}
+
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
 	}
 
 	return response.Data.Collectors, nil
@@ -95,6 +103,10 @@ func (c *Client) CreateCollector(ctx context.Context, collector CreateCollectorS
 	var response CreateCollectorAPIResponse
 	if err := json.Unmarshal(res, &response); err != nil {
 		return nil, fmt.Errorf("failed to parse create collector response: %w", err)
+	}
+
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
 	}
 
 	return &response.Data, nil
@@ -140,6 +152,10 @@ func (c *Client) UpdateCollector(ctx context.Context, collectorID string, collec
 		return nil, fmt.Errorf("failed to parse update collector response: %w", err)
 	}
 
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
 	return &response.Data, nil
 }
 
@@ -168,6 +184,10 @@ func (c *Client) DeleteCollector(ctx context.Context, collectorID string) (bool,
 	var response DeleteCollectorAPIResponse
 	if err := json.Unmarshal(res, &response); err != nil {
 		return false, fmt.Errorf("failed to parse collector response: %w", err)
+	}
+
+	if !response.Success {
+		return false, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
 	}
 
 	return response.Success, nil

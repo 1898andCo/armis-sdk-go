@@ -27,6 +27,7 @@ func TestGetUsers(t *testing.T) {
 						"name":  "Example",
 					}},
 				},
+				"success": true,
 			})
 		},
 	})

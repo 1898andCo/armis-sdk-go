@@ -31,6 +31,10 @@ func (c *Client) GetUsers(ctx context.Context) ([]UserSettings, error) {
 		return nil, fmt.Errorf("failed to parse users response: %w", err)
 	}
 
+	if !response.Success {
+		return []UserSettings{}, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
 	return response.Data.Users, nil
 }
 
@@ -176,6 +180,10 @@ func (c *Client) DeleteUser(ctx context.Context, userID string) (bool, error) {
 	var response DeleteUserAPIResponse
 	if err := json.Unmarshal(res, &response); err != nil {
 		return false, fmt.Errorf("failed to parse user response: %w", err)
+	}
+
+	if !response.Success {
+		return false, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
 	}
 
 	return response.Success, nil

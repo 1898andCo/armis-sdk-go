@@ -51,7 +51,8 @@ func TestGetCollectorByID(t *testing.T) {
 				t.Fatalf("expected GET, got %s", r.Method)
 			}
 			respondJSON(t, w, http.StatusOK, map[string]any{
-				"data": map[string]any{"name": "Primary"},
+				"data":    map[string]any{"name": "Primary"},
+				"success": true,
 			})
 		},
 	})
@@ -132,7 +133,8 @@ func TestUpdateCollector(t *testing.T) {
 				t.Fatalf("unexpected payload: %+v", got)
 			}
 			respondJSON(t, w, http.StatusOK, map[string]any{
-				"data": map[string]any{"name": "Updated"},
+				"data":    map[string]any{"name": "Updated"},
+				"success": true,
 			})
 		},
 	})

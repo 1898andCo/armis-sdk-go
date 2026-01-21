@@ -22,6 +22,7 @@ func TestGetSites(t *testing.T) {
 				"data": map[string]any{
 					"sites": []map[string]any{{"name": "Example", "siteId": 42}},
 				},
+				"success": true,
 			})
 		},
 	})

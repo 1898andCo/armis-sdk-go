@@ -232,6 +232,10 @@ func (c *Client) DeletePolicy(ctx context.Context, policyID string) (bool, error
 		return false, fmt.Errorf("failed to parse policy response: %w", err)
 	}
 
+	if !response.Success {
+		return false, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
 	return response.Success, nil
 }
 

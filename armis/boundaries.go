@@ -37,6 +37,10 @@ func (c *Client) GetBoundaryByID(ctx context.Context, boundaryID string) (*Bound
 		return nil, fmt.Errorf("failed to parse boundary response: %w", err)
 	}
 
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
 	return &response.Data, nil
 }
 
@@ -58,6 +62,10 @@ func (c *Client) GetBoundaries(ctx context.Context) ([]BoundarySettings, error) 
 	var response GetBoundaries
 	if err := json.Unmarshal(res, &response); err != nil {
 		return nil, fmt.Errorf("failed to parse boundaries response: %w", err)
+	}
+
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
 	}
 
 	return response.Data.Boundaries, nil
