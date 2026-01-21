@@ -29,5 +29,9 @@ func (c *Client) GetLists(ctx context.Context) ([]ListSettings, error) {
 		return nil, fmt.Errorf("failed to parse Lists response: %w", err)
 	}
 
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
 	return response.Data.Lists, nil
 }

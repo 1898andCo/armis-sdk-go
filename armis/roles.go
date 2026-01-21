@@ -29,6 +29,10 @@ func (c *Client) GetRoles(ctx context.Context) ([]RoleSettings, error) {
 		return nil, fmt.Errorf("failed to parse roles response: %w", err)
 	}
 
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
 	return response.Data, nil
 }
 
@@ -99,6 +103,10 @@ func (c *Client) CreateRole(ctx context.Context, role RoleSettings) (bool, error
 		return false, fmt.Errorf("failed to parse role creation response: %w", err)
 	}
 
+	if !response.Success {
+		return false, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
 	return response.Success, nil
 }
 
@@ -154,6 +162,10 @@ func (c *Client) DeleteRole(ctx context.Context, id string) (bool, error) {
 	var response DeleteRoleAPIResponse
 	if err := json.Unmarshal(res, &response); err != nil {
 		return false, fmt.Errorf("failed to parse role deletion response: %w", err)
+	}
+
+	if !response.Success {
+		return false, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
 	}
 
 	return response.Success, nil

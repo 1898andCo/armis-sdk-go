@@ -37,6 +37,10 @@ func (c *Client) GetReportByID(ctx context.Context, reportID string) (*Report, e
 		return nil, fmt.Errorf("failed to parse report response: %w", err)
 	}
 
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
 	return &response.Data, nil
 }
 
@@ -58,6 +62,10 @@ func (c *Client) GetReports(ctx context.Context) ([]Report, error) {
 	var response GetReportsResponse
 	if err := json.Unmarshal(res, &response); err != nil {
 		return nil, fmt.Errorf("failed to parse reports response: %w", err)
+	}
+
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
 	}
 
 	return response.Data.Reports, nil
