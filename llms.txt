@@ -40,6 +40,21 @@ The SDK is organized around a central `Client` type that handles authentication,
 - [armis/sites.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/sites.go): Site information
 - [armis/lists.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/lists.go): Custom list retrieval
 
+## Tests
+
+- [armis/testhelpers_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/testhelpers_test.go): Shared test utilities and mock server setup
+- [armis/client_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/client_test.go): Client initialization and configuration tests
+- [armis/auth_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/auth_test.go): Authentication and token management tests
+- [armis/search_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/search_test.go): Search API tests
+- [armis/users_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/users_test.go): User management tests
+- [armis/roles_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/roles_test.go): Role management tests
+- [armis/policies_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/policies_test.go): Policy CRUD tests
+- [armis/collectors_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/collectors_test.go): Collector management tests
+- [armis/boundaries_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/boundaries_test.go): Boundary retrieval tests
+- [armis/reports_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/reports_test.go): Report operation tests
+- [armis/sites_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/sites_test.go): Site information tests
+- [armis/lists_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/lists_test.go): Custom list retrieval tests
+
 ## Data Models
 
 - [armis/model_search.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_search.go): SearchResults, SearchItem types
@@ -50,7 +65,7 @@ The SDK is organized around a central `Client` type that handles authentication,
 - [armis/model_boundaries.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_boundaries.go): Boundary types
 - [armis/model_reports.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_reports.go): Report types
 - [armis/model_sites.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_sites.go): Site types
-- [armis/model_list.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_list.go): List types
+- [armis/model_lists.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_lists.go): List types
 
 ## Optional
 
