@@ -89,3 +89,7 @@ PRs are welcome! We follow the typical "fork-and-pull" Git workflow:
 
 > [!TIP]
 > Be sure to merge the latest changes from "upstream" before making a pull request!
+
+## LLM Support
+
+This project includes an [llms.txt](./llms.txt) file following the [llms.txt specification](https://llmstxt.org) to help Large Language Models understand and work with this codebase more effectively.

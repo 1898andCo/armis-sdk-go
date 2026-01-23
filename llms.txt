@@ -1,0 +1,75 @@
+# Armis Go SDK
+
+> A Go client library for the Armis Centrix API. This SDK provides a simple, idiomatic, and thread-safe way to interact with the Armis platform for asset visibility, security monitoring, and policy management. Requires Go >= 1.25. Uses API key authentication obtained from the Armis console under Settings > API Management.
+
+The SDK is organized around a central `Client` type that handles authentication, request signing, and token refresh automatically. All API methods accept a `context.Context` for cancellation and timeout control.
+
+## Getting Started
+
+- [README](https://github.com/1898andCo/armis-sdk-go/blob/main/README.md): Installation, authentication setup, and quick start example
+- [Getting Started Guide](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/getting-started.md): Detailed setup and configuration options
+- [Contributing Guide](https://github.com/1898andCo/armis-sdk-go/blob/main/CONTRIBUTING.md): How to contribute to the SDK
+
+## Core Components
+
+- [Client](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/client.go): Main client struct with NewClient constructor and functional options (WithAPIURL, WithAPIVersion, WithHTTPClient)
+- [Authentication](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/auth.go): API key authentication and token management
+- [Errors](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/errors.go): Sentinel errors for validation and API failures
+
+## API Documentation
+
+- [Search](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/search.md): Query devices, alerts, and vulnerabilities using AQL (Armis Query Language)
+- [Users](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/users.md): Manage user accounts (GetUsers, GetUser, CreateUser, UpdateUser, DeleteUser)
+- [Roles](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/roles.md): Configure role permissions (GetRoles, GetRole, CreateRole, UpdateRole, DeleteRole)
+- [Policies](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/policies.md): Create and manage security policies with DEVICE, ACTIVITY, IP_CONNECTION, or VULNERABILITY rule types
+- [Collectors](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/collectors.md): Manage data collectors
+- [Boundaries](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/boundaries.md): View network boundaries
+- [Reports](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/reports.md): Access scheduled reports
+- [Sites](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/sites.md): View site information
+- [Lists](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/lists.md): View custom lists
+
+## Source Code
+
+- [armis/search.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/search.go): GetSearch implementation for AQL queries
+- [armis/users.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/users.go): User management operations
+- [armis/roles.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/roles.go): Role management operations
+- [armis/policies.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/policies.go): Policy CRUD operations
+- [armis/collectors.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/collectors.go): Collector management
+- [armis/boundaries.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/boundaries.go): Boundary retrieval
+- [armis/reports.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/reports.go): Report operations
+- [armis/sites.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/sites.go): Site information
+- [armis/lists.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/lists.go): Custom list retrieval
+
+## Tests
+
+- [armis/testhelpers_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/testhelpers_test.go): Shared test utilities and mock server setup
+- [armis/client_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/client_test.go): Client initialization and configuration tests
+- [armis/auth_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/auth_test.go): Authentication and token management tests
+- [armis/search_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/search_test.go): Search API tests
+- [armis/users_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/users_test.go): User management tests
+- [armis/roles_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/roles_test.go): Role management tests
+- [armis/policies_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/policies_test.go): Policy CRUD tests
+- [armis/collectors_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/collectors_test.go): Collector management tests
+- [armis/boundaries_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/boundaries_test.go): Boundary retrieval tests
+- [armis/reports_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/reports_test.go): Report operation tests
+- [armis/sites_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/sites_test.go): Site information tests
+- [armis/lists_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/lists_test.go): Custom list retrieval tests
+
+## Data Models
+
+- [armis/model_search.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_search.go): SearchResults, SearchItem types
+- [armis/model_users.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_users.go): User struct and related types
+- [armis/model_roles.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_roles.go): Role struct and permissions
+- [armis/model_policies.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_policies.go): Policy, PolicySettings, Rules, Action types
+- [armis/model_collectors.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_collectors.go): Collector types
+- [armis/model_boundaries.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_boundaries.go): Boundary types
+- [armis/model_reports.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_reports.go): Report types
+- [armis/model_sites.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_sites.go): Site types
+- [armis/model_lists.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_lists.go): List types
+
+## Optional
+
+- [LICENSE](https://github.com/1898andCo/armis-sdk-go/blob/main/LICENSE): Apache-2.0 license
+- [SECURITY.md](https://github.com/1898andCo/armis-sdk-go/blob/main/SECURITY.md): Security policy and vulnerability reporting
+- [Makefile](https://github.com/1898andCo/armis-sdk-go/blob/main/Makefile): Build and development commands
+- [.golangci.yml](https://github.com/1898andCo/armis-sdk-go/blob/main/.golangci.yml): Linter configuration
