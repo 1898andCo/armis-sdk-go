@@ -83,6 +83,10 @@ func (c *Client) GetRoleByID(ctx context.Context, id string) (*RoleSettings, err
 
 // CreateRole creates a new role in the API.
 func (c *Client) CreateRole(ctx context.Context, role RoleSettings) (bool, error) {
+	if role.Name == "" {
+		return false, fmt.Errorf("%w", ErrRoleName)
+	}
+
 	roleData, err := json.Marshal(role)
 	if err != nil {
 		return false, fmt.Errorf("failed to marshal role data: %w", err)

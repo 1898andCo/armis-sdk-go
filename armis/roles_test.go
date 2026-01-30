@@ -143,6 +143,17 @@ func TestCreateRole(t *testing.T) {
 	}
 }
 
+func TestCreateRoleRequiresName(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, nil)
+	defer cleanup()
+
+	if _, err := client.CreateRole(context.Background(), RoleSettings{}); !errors.Is(err, ErrRoleName) {
+		t.Fatalf("expected ErrRoleName, got %v", err)
+	}
+}
+
 func TestUpdateRole(t *testing.T) {
 	t.Parallel()
 
