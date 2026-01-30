@@ -61,7 +61,7 @@ func (c *Client) CreatePolicy(ctx context.Context, policy PolicySettings) (Polic
 // and the rule type must be ACTIVITY, IP CONNECTION, DEVICE, or VULNERABILITY.
 func (p PolicySettings) Validate() error {
 	var errs []error
-	if p.Name == "" {
+	if strings.TrimSpace(p.Name) == "" {
 		errs = append(errs, ErrPolicyName)
 	}
 
@@ -202,6 +202,17 @@ func validateUpdateInput(policy PolicySettings, id string) error {
 	if strings.TrimSpace(id) == "" {
 		errs = append(errs, ErrPolicyID)
 	}
+
+	// Validate optional fields if they have values
+	if len(policy.Description) > descriptionLimit {
+		errs = append(errs, ErrPolicyDescription)
+	}
+	if policy.RuleType != "" {
+		if _, ok := allowedRuleTypes[policy.RuleType]; !ok {
+			errs = append(errs, ErrPolicyRuleType)
+		}
+	}
+
 	return errors.Join(errs...)
 }
 
