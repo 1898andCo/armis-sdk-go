@@ -27,7 +27,7 @@ func (c *Client) GetCollectorByID(ctx context.Context, collectorID string) (*Col
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch collector: %w", err)
 	}
@@ -54,7 +54,7 @@ func (c *Client) GetCollectors(ctx context.Context) ([]CollectorSettings, error)
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch collectors: %w", err)
 	}
@@ -94,7 +94,7 @@ func (c *Client) CreateCollector(ctx context.Context, collector CreateCollectorS
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create collector: %w", err)
 	}
@@ -141,7 +141,7 @@ func (c *Client) UpdateCollector(ctx context.Context, collectorID string, collec
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update collector: %w", err)
 	}
@@ -175,7 +175,7 @@ func (c *Client) DeleteCollector(ctx context.Context, collectorID string) (bool,
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return false, fmt.Errorf("failed to delete collector: %w", err)
 	}

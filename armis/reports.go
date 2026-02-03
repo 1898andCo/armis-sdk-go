@@ -26,7 +26,7 @@ func (c *Client) GetReportByID(ctx context.Context, reportID string) (*Report, e
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch report: %w", err)
 	}
@@ -53,7 +53,7 @@ func (c *Client) GetReports(ctx context.Context) ([]Report, error) {
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch reports: %w", err)
 	}

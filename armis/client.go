@@ -155,8 +155,15 @@ func (c *Client) newRequest(ctx context.Context, method, path string, body io.Re
 }
 
 // doRequest executes the HTTP request and returns the response body for 2xx
-// codes or an *APIError otherwise.
-func (c *Client) doRequest(req *http.Request) ([]byte, error) {
+// codes or an *APIError otherwise. It automatically retries once on 401
+// Unauthorized by refreshing the access token.
+func (c *Client) doRequest(ctx context.Context, req *http.Request) ([]byte, error) {
+	return c.doRequestWithRetry(ctx, req, true)
+}
+
+// doRequestWithRetry is the internal implementation that tracks whether a
+// retry is allowed. This prevents infinite retry loops on persistent 401s.
+func (c *Client) doRequestWithRetry(ctx context.Context, req *http.Request, canRetry bool) ([]byte, error) {
 	res, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -166,6 +173,17 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if res.StatusCode == http.StatusUnauthorized && canRetry {
+		// Force token refresh and retry once
+		if err := c.authenticate(ctx); err != nil {
+			return nil, fmt.Errorf("%w: %v", ErrAuthFailed, err)
+		}
+		c.mu.RLock()
+		req.Header.Set("Authorization", c.accessToken)
+		c.mu.RUnlock()
+		return c.doRequestWithRetry(ctx, req, false)
 	}
 
 	if res.StatusCode >= 200 && res.StatusCode < 300 {

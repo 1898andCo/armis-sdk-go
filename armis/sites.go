@@ -18,7 +18,7 @@ func (c *Client) GetSites(ctx context.Context) ([]SiteSettings, error) {
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch sites: %w", err)
 	}

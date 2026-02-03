@@ -39,7 +39,7 @@ func (c *Client) CreatePolicy(ctx context.Context, policy PolicySettings) (Polic
 		return PolicyID{}, fmt.Errorf("failed to create request for CreatePolicy: %w", err)
 	}
 
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return PolicyID{}, fmt.Errorf("failed to create policy %q: %w", policy.Name, err)
 	}
@@ -96,7 +96,7 @@ func (c *Client) GetPolicy(ctx context.Context, policyID string) (GetPolicySetti
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return GetPolicySettings{}, fmt.Errorf("failed to fetch policy: %w", err)
 	}
@@ -126,7 +126,7 @@ func (c *Client) GetAllPolicies(ctx context.Context) ([]SinglePolicy, error) {
 			return nil, fmt.Errorf("failed to create request for Get All Policies: %w", err)
 		}
 
-		res, err := c.doRequest(req)
+		res, err := c.doRequest(ctx, req)
 		if err != nil {
 			return nil, fmt.Errorf("failed to fetch policies page (from=%d): %w", from, err)
 		}
@@ -175,7 +175,7 @@ func (c *Client) UpdatePolicy(ctx context.Context, policy PolicySettings, policy
 		return UpdatePolicySettings{}, fmt.Errorf("failed to create request for UpdatePolicy: %w", err)
 	}
 
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return UpdatePolicySettings{}, fmt.Errorf("failed to update policy %q: %w", policy.Name, err)
 	}
@@ -232,7 +232,7 @@ func (c *Client) DeletePolicy(ctx context.Context, policyID string) (bool, error
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return false, fmt.Errorf("failed to delete policy: %w", err)
 	}

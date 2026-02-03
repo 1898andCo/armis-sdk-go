@@ -19,7 +19,7 @@ func (c *Client) GetRoles(ctx context.Context) ([]RoleSettings, error) {
 		return nil, fmt.Errorf("failed to create request for GetRoles: %w", err)
 	}
 
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch roles: %w", err)
 	}
@@ -97,7 +97,7 @@ func (c *Client) CreateRole(ctx context.Context, role RoleSettings) (bool, error
 		return false, fmt.Errorf("failed to create request for CreateRole: %w", err)
 	}
 
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return false, fmt.Errorf("failed to create role: %w", err)
 	}
@@ -132,7 +132,7 @@ func (c *Client) UpdateRole(ctx context.Context, role RoleSettings, id string) (
 		return nil, fmt.Errorf("failed to create request for UpdateRole: %w", err)
 	}
 
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update role: %w", err)
 	}
@@ -158,7 +158,7 @@ func (c *Client) DeleteRole(ctx context.Context, id string) (bool, error) {
 		return false, fmt.Errorf("failed to create request for DeleteRole: %w", err)
 	}
 
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return false, fmt.Errorf("failed to delete role: %w", err)
 	}

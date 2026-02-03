@@ -20,7 +20,7 @@ func (c *Client) GetUsers(ctx context.Context) ([]UserSettings, error) {
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch users: %w", err)
 	}
@@ -54,7 +54,7 @@ func (c *Client) GetUser(ctx context.Context, userID string) (*UserSettings, err
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch user: %w", err)
 	}
@@ -92,7 +92,7 @@ func (c *Client) CreateUser(ctx context.Context, user UserSettings) (*UserSettin
 		return nil, fmt.Errorf("failed to create request for CreateUser: %w", err)
 	}
 
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create user %q: %w", user.Name, err)
 	}
@@ -137,7 +137,7 @@ func (c *Client) UpdateUser(ctx context.Context, user UserSettings, userID strin
 		return nil, fmt.Errorf("failed to create request for UpdateUser: %w", err)
 	}
 
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update user %q: %w", user.Name, err)
 	}
@@ -171,7 +171,7 @@ func (c *Client) DeleteUser(ctx context.Context, userID string) (bool, error) {
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return false, fmt.Errorf("failed to delete user: %w", err)
 	}

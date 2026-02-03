@@ -26,7 +26,7 @@ func (c *Client) GetBoundaryByID(ctx context.Context, boundaryID string) (*Bound
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch boundary: %w", err)
 	}
@@ -53,7 +53,7 @@ func (c *Client) GetBoundaries(ctx context.Context) ([]BoundarySettings, error) 
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch boundaries: %w", err)
 	}

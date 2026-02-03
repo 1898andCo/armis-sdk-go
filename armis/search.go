@@ -32,7 +32,7 @@ func (c *Client) GetSearch(ctx context.Context, aql string, includeSample, inclu
 		return SearchData{}, fmt.Errorf("failed to create request for GetSearch: %w", err)
 	}
 
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return SearchData{}, fmt.Errorf("failed to execute search: %w", err)
 	}
