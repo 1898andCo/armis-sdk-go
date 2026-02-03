@@ -239,8 +239,8 @@ func TestGetAuditLogSearch(t *testing.T) {
 	if auditLog.Action != "API Call" {
 		t.Errorf("expected action 'API Call', got %q", auditLog.Action)
 	}
-	if auditLog.ID != 3505970941 {
-		t.Errorf("expected id 3505970941, got %d", auditLog.ID)
+	if auditLog.ID.MustInt() != 3505970941 {
+		t.Errorf("expected id 3505970941, got %d", auditLog.ID.MustInt())
 	}
 	if auditLog.Trigger != "User Action" {
 		t.Errorf("expected trigger 'User Action', got %q", auditLog.Trigger)
@@ -542,8 +542,8 @@ func TestGetConnectionsSearch(t *testing.T) {
 	}
 
 	conn := res.Results[0]
-	if conn.ID != 27 {
-		t.Errorf("expected id 27, got %d", conn.ID)
+	if conn.ID.MustInt() != 27 {
+		t.Errorf("expected id 27, got %d", conn.ID.MustInt())
 	}
 	if conn.Protocol != "BMS" {
 		t.Errorf("expected protocol 'BMS', got %q", conn.Protocol)
@@ -601,6 +601,204 @@ func TestGetConnectionsSearch(t *testing.T) {
 	}
 	if conn.Sites[0].Name != "Lab" {
 		t.Errorf("expected sites[0].name 'Lab', got %q", conn.Sites[0].Name)
+	}
+}
+
+func TestGetVulnerabilitySearch(t *testing.T) {
+	t.Parallel()
+
+	const (
+		aql           = "in:vulnerabilities"
+		includeSample = false
+		includeTotal  = true
+	)
+
+	cvssV4Score := 9.5
+
+	client, cleanup := newTestClient(t, map[string]http.HandlerFunc{
+		"/api/v1/search/": func(w http.ResponseWriter, r *http.Request) {
+			assertAuthHeader(t, r)
+			if r.Method != http.MethodGet {
+				t.Fatalf("expected GET, got %s", r.Method)
+			}
+
+			values := r.URL.Query()
+			if got := values.Get("aql"); got != aql {
+				t.Fatalf("unexpected aql: %q", got)
+			}
+
+			respondJSON(t, w, http.StatusOK, map[string]any{
+				"success": true,
+				"data": map[string]any{
+					"count": 2,
+					"next":  10,
+					"prev":  nil,
+					"total": 2,
+					"results": []map[string]any{
+						{
+							"affectedDevicesCount":  5,
+							"attackComplexity":      "Low",
+							"attackVector":          "Network",
+							"availabilityImpact":    "High",
+							"confidentialityImpact": "High",
+							"cveUid":                "CVE-2021-4140",
+							"cvssScore":             10.0,
+							"cvssScoreV4":           nil,
+							"description":           "It was possible to construct specific XSLT markup that would be able to bypass an iframe sandbox.",
+							"exploitabilityScore":   3.9,
+							"firstDetected":         "2025-02-13T00:11:27.817174+00:00",
+							"hasRemediationInfo":    "No",
+							"id":                    "CVE-2021-4140",
+							"impactScore":           6.0,
+							"integrityImpact":       "High",
+							"lastDetected":          "2025-02-13T02:13:59.064600+00:00",
+							"privilegesRequired":    "None",
+							"publishedDate":         "2022-12-22T20:15:12.250000+00:00",
+							"scope":                 "Changed",
+							"score":                 10,
+							"severity":              "Critical",
+							"status":                "Resolved",
+							"type":                  "Application",
+							"userInteraction":       "None",
+						},
+						{
+							"affectedDevicesCount":  12,
+							"attackComplexity":      "High",
+							"attackVector":          "Local",
+							"availabilityImpact":    "Low",
+							"confidentialityImpact": "None",
+							"cveUid":                "CVE-2023-1234",
+							"cvssScore":             5.5,
+							"cvssScoreV4":           cvssV4Score,
+							"description":           "A test vulnerability with CVSS v4 score.",
+							"exploitabilityScore":   1.8,
+							"firstDetected":         "2025-01-01T00:00:00+00:00",
+							"hasRemediationInfo":    "Yes",
+							"id":                    "CVE-2023-1234",
+							"impactScore":           3.7,
+							"integrityImpact":       "Low",
+							"lastDetected":          "2025-01-15T12:00:00+00:00",
+							"privilegesRequired":    "Low",
+							"publishedDate":         "2023-06-15T10:00:00+00:00",
+							"scope":                 "Unchanged",
+							"score":                 5.5,
+							"severity":              "Medium",
+							"status":                "Open",
+							"type":                  "Operating System",
+							"userInteraction":       "Required",
+						},
+					},
+				},
+			})
+		},
+	})
+	defer cleanup()
+
+	res, err := client.GetSearch(context.Background(), aql, includeSample, includeTotal)
+	if err != nil {
+		t.Fatalf("get search: %v", err)
+	}
+	if res.Total != 2 || len(res.Results) != 2 {
+		t.Fatalf("expected 2 results, got %d (total: %d)", len(res.Results), res.Total)
+	}
+
+	// Test first vulnerability (Critical, no CVSS v4)
+	v1 := res.Results[0]
+	if v1.AffectedDevicesCount != 5 {
+		t.Errorf("expected affectedDevicesCount 5, got %d", v1.AffectedDevicesCount)
+	}
+	if v1.AttackComplexity != "Low" {
+		t.Errorf("expected attackComplexity 'Low', got %q", v1.AttackComplexity)
+	}
+	if v1.AttackVector != "Network" {
+		t.Errorf("expected attackVector 'Network', got %q", v1.AttackVector)
+	}
+	if v1.AvailabilityImpact != "High" {
+		t.Errorf("expected availabilityImpact 'High', got %q", v1.AvailabilityImpact)
+	}
+	if v1.ConfidentialityImpact != "High" {
+		t.Errorf("expected confidentialityImpact 'High', got %q", v1.ConfidentialityImpact)
+	}
+	if v1.CveUid != "CVE-2021-4140" {
+		t.Errorf("expected cveUid 'CVE-2021-4140', got %q", v1.CveUid)
+	}
+	if v1.CvssScore != 10.0 {
+		t.Errorf("expected cvssScore 10.0, got %f", v1.CvssScore)
+	}
+	if v1.CvssScoreV4 != nil {
+		t.Errorf("expected cvssScoreV4 nil, got %v", *v1.CvssScoreV4)
+	}
+	if v1.ExploitabilityScore != 3.9 {
+		t.Errorf("expected exploitabilityScore 3.9, got %f", v1.ExploitabilityScore)
+	}
+	if v1.FirstDetected != "2025-02-13T00:11:27.817174+00:00" {
+		t.Errorf("expected firstDetected '2025-02-13T00:11:27.817174+00:00', got %q", v1.FirstDetected)
+	}
+	if v1.HasRemediationInfo != "No" {
+		t.Errorf("expected hasRemediationInfo 'No', got %q", v1.HasRemediationInfo)
+	}
+	if v1.ID != "CVE-2021-4140" {
+		t.Errorf("expected id 'CVE-2021-4140', got %q", v1.ID)
+	}
+	if v1.ImpactScore != 6.0 {
+		t.Errorf("expected impactScore 6.0, got %f", v1.ImpactScore)
+	}
+	if v1.IntegrityImpact != "High" {
+		t.Errorf("expected integrityImpact 'High', got %q", v1.IntegrityImpact)
+	}
+	if v1.LastDetected != "2025-02-13T02:13:59.064600+00:00" {
+		t.Errorf("expected lastDetected '2025-02-13T02:13:59.064600+00:00', got %q", v1.LastDetected)
+	}
+	if v1.PrivilegesRequired != "None" {
+		t.Errorf("expected privilegesRequired 'None', got %q", v1.PrivilegesRequired)
+	}
+	if v1.PublishedDate != "2022-12-22T20:15:12.250000+00:00" {
+		t.Errorf("expected publishedDate '2022-12-22T20:15:12.250000+00:00', got %q", v1.PublishedDate)
+	}
+	if v1.Scope != "Changed" {
+		t.Errorf("expected scope 'Changed', got %q", v1.Scope)
+	}
+	if v1.Score != "10" {
+		t.Errorf("expected score '10', got %q", v1.Score)
+	}
+	if v1.Severity != "Critical" {
+		t.Errorf("expected severity 'Critical', got %q", v1.Severity)
+	}
+	if v1.Status != "Resolved" {
+		t.Errorf("expected status 'Resolved', got %q", v1.Status)
+	}
+	if v1.Type != "Application" {
+		t.Errorf("expected type 'Application', got %q", v1.Type)
+	}
+	if v1.UserInteraction != "None" {
+		t.Errorf("expected userInteraction 'None', got %q", v1.UserInteraction)
+	}
+
+	// Test second vulnerability (Medium, with CVSS v4)
+	v2 := res.Results[1]
+	if v2.CveUid != "CVE-2023-1234" {
+		t.Errorf("expected cveUid 'CVE-2023-1234', got %q", v2.CveUid)
+	}
+	if v2.CvssScoreV4 == nil {
+		t.Fatal("expected cvssScoreV4 to be non-nil")
+	}
+	if *v2.CvssScoreV4 != 9.5 {
+		t.Errorf("expected cvssScoreV4 9.5, got %f", *v2.CvssScoreV4)
+	}
+	if v2.AttackComplexity != "High" {
+		t.Errorf("expected attackComplexity 'High', got %q", v2.AttackComplexity)
+	}
+	if v2.AttackVector != "Local" {
+		t.Errorf("expected attackVector 'Local', got %q", v2.AttackVector)
+	}
+	if v2.HasRemediationInfo != "Yes" {
+		t.Errorf("expected hasRemediationInfo 'Yes', got %q", v2.HasRemediationInfo)
+	}
+	if v2.Severity != "Medium" {
+		t.Errorf("expected severity 'Medium', got %q", v2.Severity)
+	}
+	if v2.UserInteraction != "Required" {
+		t.Errorf("expected userInteraction 'Required', got %q", v2.UserInteraction)
 	}
 }
 
