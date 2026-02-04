@@ -148,6 +148,8 @@ func (id FlexibleID) String() string {
 	return string(id)
 }
 
+// FlexibleScore is a string type that can unmarshal from both JSON strings and
+// JSON numbers. Use this for any score field that may be returned as either type.
 type FlexibleScore string
 
 func (score *FlexibleScore) UnmarshalJSON(b []byte) error {

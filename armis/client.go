@@ -6,6 +6,7 @@
 package armis
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -164,6 +165,19 @@ func (c *Client) doRequest(ctx context.Context, req *http.Request) ([]byte, erro
 // doRequestWithRetry is the internal implementation that tracks whether a
 // retry is allowed. This prevents infinite retry loops on persistent 401s.
 func (c *Client) doRequestWithRetry(ctx context.Context, req *http.Request, canRetry bool) ([]byte, error) {
+	// Buffer the request body so we can replay it on retry. This is necessary
+	// because the body reader is consumed during the first attempt.
+	var bodyBytes []byte
+	if req.Body != nil {
+		var err error
+		bodyBytes, err = io.ReadAll(req.Body)
+		if err != nil {
+			return nil, err
+		}
+		req.Body.Close()
+		req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
+	}
+
 	res, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -183,6 +197,10 @@ func (c *Client) doRequestWithRetry(ctx context.Context, req *http.Request, canR
 		c.mu.RLock()
 		req.Header.Set("Authorization", c.accessToken)
 		c.mu.RUnlock()
+		// Reset the request body for the retry attempt
+		if bodyBytes != nil {
+			req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
+		}
 		return c.doRequestWithRetry(ctx, req, false)
 	}
 
