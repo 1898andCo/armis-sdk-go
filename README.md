@@ -1,5 +1,15 @@
 # Armis Go SDK
 
+<div align="center">
+
+[![Armis SDK Tests](https://github.com/1898andCo/armis-sdk-go/actions/workflows/sdk-tests.yml/badge.svg)](https://github.com/1898andCo/armis-sdk-go/actions/workflows/sdk-tests.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/1898andCo/armis-sdk-go)](https://goreportcard.com/report/github.com/1898andCo/armis-sdk-go)
+[![Go Reference](https://pkg.go.dev/badge/github.com/1898andCo/armis-sdk-go.svg)](https://pkg.go.dev/github.com/1898andCo/armis-sdk-go)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/1898andCo/armis-sdk-go)](go.mod)
+[![License](https://img.shields.io/github/license/1898andCo/armis-sdk-go)](LICENSE)
+
+</div>
+
 A Go client library for the [Armis Centrix](https://www.armis.com/) API. This SDK provides a simple, idiomatic, and thread-safe way to interact with the Armis platform.
 
 ## Requirements
