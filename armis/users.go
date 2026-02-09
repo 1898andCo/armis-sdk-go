@@ -9,10 +9,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strings"
 )
 
 // GetUsers fetches all users from Armis.
 func (c *Client) GetUsers(ctx context.Context) ([]UserSettings, error) {
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	// Create a new request
 	req, err := c.newRequest(ctx, "GET", fmt.Sprintf("/api/%s/users/", c.apiVersion), nil)
 	if err != nil {
@@ -40,8 +48,14 @@ func (c *Client) GetUsers(ctx context.Context) ([]UserSettings, error) {
 
 // GetUser fetches a user from Armis using the user's ID or email.
 func (c *Client) GetUser(ctx context.Context, userID string) (*UserSettings, error) {
-	if userID == "" {
-		return nil, fmt.Errorf("%w", ErrUserID)
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(userID) == "" {
+		return nil, ErrUserID
 	}
 
 	// URL encode the user ID
@@ -74,12 +88,17 @@ func (c *Client) GetUser(ctx context.Context, userID string) (*UserSettings, err
 
 // CreateUser creates a new user in Armis.
 func (c *Client) CreateUser(ctx context.Context, user UserSettings) (*UserSettings, error) {
-	if user.Name == "" {
-		return nil, fmt.Errorf("%w", ErrUserName)
+	if ctx == nil {
+		return nil, ErrNilContext
 	}
-
-	if user.Email == "" {
-		return nil, fmt.Errorf("%w", ErrUserEmail)
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(user.Name) == "" {
+		return nil, ErrUserName
+	}
+	if strings.TrimSpace(user.Email) == "" {
+		return nil, ErrUserEmail
 	}
 
 	userData, err := json.Marshal(user)
@@ -112,16 +131,20 @@ func (c *Client) CreateUser(ctx context.Context, user UserSettings) (*UserSettin
 
 // UpdateUser updates a user in Armis.
 func (c *Client) UpdateUser(ctx context.Context, user UserSettings, userID string) (*UserSettings, error) {
-	if user.Name == "" {
-		return nil, fmt.Errorf("%w", ErrUserName)
+	if ctx == nil {
+		return nil, ErrNilContext
 	}
-
-	if user.Email == "" {
-		return nil, fmt.Errorf("%w", ErrUserEmail)
+	if err := ctx.Err(); err != nil {
+		return nil, err
 	}
-
-	if userID == "" {
-		return nil, fmt.Errorf("%w", ErrUserID)
+	if strings.TrimSpace(user.Name) == "" {
+		return nil, ErrUserName
+	}
+	if strings.TrimSpace(user.Email) == "" {
+		return nil, ErrUserEmail
+	}
+	if strings.TrimSpace(userID) == "" {
+		return nil, ErrUserID
 	}
 
 	userData, err := json.Marshal(user)
@@ -157,8 +180,14 @@ func (c *Client) UpdateUser(ctx context.Context, user UserSettings, userID strin
 
 // DeleteUser deletes a user from Armis.
 func (c *Client) DeleteUser(ctx context.Context, userID string) (bool, error) {
-	if userID == "" {
-		return false, fmt.Errorf("%w", ErrUserID)
+	if ctx == nil {
+		return false, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return false, err
+	}
+	if strings.TrimSpace(userID) == "" {
+		return false, ErrUserID
 	}
 
 	// URL encode the user ID

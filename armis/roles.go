@@ -10,10 +10,18 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"strings"
 )
 
 // GetRoles fetches all roles from the API.
 func (c *Client) GetRoles(ctx context.Context) ([]RoleSettings, error) {
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	req, err := c.newRequest(ctx, "GET", fmt.Sprintf("/api/%s/roles/", c.apiVersion), nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request for GetRoles: %w", err)
@@ -38,8 +46,14 @@ func (c *Client) GetRoles(ctx context.Context) ([]RoleSettings, error) {
 
 // GetRoleByName fetches a specific role by name.
 func (c *Client) GetRoleByName(ctx context.Context, name string) (*RoleSettings, error) {
-	if name == "" {
-		return nil, fmt.Errorf("%w", ErrRoleName)
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(name) == "" {
+		return nil, ErrRoleName
 	}
 
 	roles, err := c.GetRoles(ctx)
@@ -58,8 +72,14 @@ func (c *Client) GetRoleByName(ctx context.Context, name string) (*RoleSettings,
 
 // GetRoleByID fetches a specific role by ID.
 func (c *Client) GetRoleByID(ctx context.Context, id string) (*RoleSettings, error) {
-	if id == "" {
-		return nil, fmt.Errorf("%w", ErrRoleID)
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(id) == "" {
+		return nil, ErrRoleID
 	}
 
 	roles, err := c.GetRoles(ctx)
@@ -83,8 +103,14 @@ func (c *Client) GetRoleByID(ctx context.Context, id string) (*RoleSettings, err
 
 // CreateRole creates a new role in the API.
 func (c *Client) CreateRole(ctx context.Context, role RoleSettings) (bool, error) {
-	if role.Name == "" {
-		return false, fmt.Errorf("%w", ErrRoleName)
+	if ctx == nil {
+		return false, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return false, err
+	}
+	if strings.TrimSpace(role.Name) == "" {
+		return false, ErrRoleName
 	}
 
 	roleData, err := json.Marshal(role)
@@ -116,8 +142,14 @@ func (c *Client) CreateRole(ctx context.Context, role RoleSettings) (bool, error
 
 // UpdateRole updates an existing role in the API.
 func (c *Client) UpdateRole(ctx context.Context, role RoleSettings, id string) (*RoleSettings, error) {
-	if id == "" {
-		return nil, fmt.Errorf("%w", ErrRoleID)
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(id) == "" {
+		return nil, ErrRoleID
 	}
 
 	roleData, err := json.Marshal(role)
@@ -147,8 +179,14 @@ func (c *Client) UpdateRole(ctx context.Context, role RoleSettings, id string) (
 
 // DeleteRole deletes a role by ID.
 func (c *Client) DeleteRole(ctx context.Context, id string) (bool, error) {
-	if id == "" {
-		return false, fmt.Errorf("%w", ErrRoleID)
+	if ctx == nil {
+		return false, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return false, err
+	}
+	if strings.TrimSpace(id) == "" {
+		return false, ErrRoleID
 	}
 
 	encodedRoleID := url.QueryEscape(id)

@@ -24,6 +24,14 @@ var allowedRuleTypes = map[string]struct{}{
 
 // CreatePolicy creates a new policy in Armis.
 func (c *Client) CreatePolicy(ctx context.Context, policy PolicySettings) (PolicyID, error) {
+	if ctx == nil {
+		return PolicyID{}, ErrNilContext
+	}
+
+	if err := ctx.Err(); err != nil {
+		return PolicyID{}, err
+	}
+
 	err := policy.Validate()
 	if err != nil {
 		return PolicyID{}, fmt.Errorf("failed to validate policy: %w", err)
@@ -82,8 +90,16 @@ func (p PolicySettings) Validate() error {
 
 // GetPolicy fetches a policy from Armis using the policy's ID.
 func (c *Client) GetPolicy(ctx context.Context, policyID string) (GetPolicySettings, error) {
-	if policyID == "" {
-		return GetPolicySettings{}, fmt.Errorf("%w", ErrPolicyID)
+	if ctx == nil {
+		return GetPolicySettings{}, ErrNilContext
+	}
+
+	if err := ctx.Err(); err != nil {
+		return GetPolicySettings{}, err
+	}
+
+	if strings.TrimSpace(policyID) == "" {
+		return GetPolicySettings{}, ErrPolicyID
 	}
 
 	// URL encode the policy ID
@@ -116,6 +132,14 @@ func (c *Client) GetPolicy(ctx context.Context, policyID string) (GetPolicySetti
 
 // GetAllPolicies retrieves all policies from Armis with automatic pagination.
 func (c *Client) GetAllPolicies(ctx context.Context) ([]SinglePolicy, error) {
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	var allPolicies []SinglePolicy
 	from := 0
 	length := 100
@@ -158,6 +182,14 @@ func (c *Client) GetAllPolicies(ctx context.Context) ([]SinglePolicy, error) {
 
 // UpdatePolicy updates a policy in Armis.
 func (c *Client) UpdatePolicy(ctx context.Context, policy PolicySettings, policyID string) (UpdatePolicySettings, error) {
+	if ctx == nil {
+		return UpdatePolicySettings{}, ErrNilContext
+	}
+
+	if err := ctx.Err(); err != nil {
+		return UpdatePolicySettings{}, err
+	}
+
 	if err := validateUpdateInput(policy, policyID); err != nil {
 		return UpdatePolicySettings{}, err
 	}
@@ -218,8 +250,16 @@ func validateUpdateInput(policy PolicySettings, id string) error {
 
 // DeletePolicy deletes a policy from Armis.
 func (c *Client) DeletePolicy(ctx context.Context, policyID string) (bool, error) {
-	if policyID == "" {
-		return false, fmt.Errorf("%w", ErrPolicyID)
+	if ctx == nil {
+		return false, ErrNilContext
+	}
+
+	if err := ctx.Err(); err != nil {
+		return false, err
+	}
+
+	if strings.TrimSpace(policyID) == "" {
+		return false, ErrPolicyID
 	}
 
 	// URL encode the policy ID

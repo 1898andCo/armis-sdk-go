@@ -11,6 +11,13 @@ import (
 
 // GetSites retrieves all sites from Armis.
 func (c *Client) GetSites(ctx context.Context) ([]SiteSettings, error) {
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	// Create a new request
 	req, err := c.newRequest(ctx, "GET", fmt.Sprintf("/api/%s/sites/", c.apiVersion), nil)
 	if err != nil {

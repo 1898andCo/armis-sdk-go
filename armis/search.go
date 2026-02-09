@@ -16,8 +16,14 @@ import (
 // Armis Query Language string. The caller can control inclusion of sample
 // results and totals via the boolean flags.
 func (c *Client) GetSearch(ctx context.Context, aql string, includeSample, includeTotal bool) (SearchData, error) {
+	if ctx == nil {
+		return SearchData{}, ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return SearchData{}, err
+	}
 	if strings.TrimSpace(aql) == "" {
-		return SearchData{}, fmt.Errorf("%w", ErrSearchAQL)
+		return SearchData{}, ErrSearchAQL
 	}
 
 	params := url.Values{}
