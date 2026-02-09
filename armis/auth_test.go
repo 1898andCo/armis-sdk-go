@@ -49,7 +49,7 @@ func TestAuthenticate_InvalidAPIKey(t *testing.T) {
 	}))
 	defer server.Close()
 
-	_, err := NewClient("invalid-key", WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+	_, err := NewClient("invalid-key", server.URL, WithHTTPClient(server.Client()))
 	if err == nil {
 		t.Fatal("expected error for invalid API key")
 	}
@@ -71,7 +71,7 @@ func TestAuthenticate_MalformedResponse(t *testing.T) {
 	}))
 	defer server.Close()
 
-	_, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+	_, err := NewClient(testAPIKey, server.URL, WithHTTPClient(server.Client()))
 	if err == nil {
 		t.Fatal("expected error for malformed response")
 	}
@@ -97,7 +97,7 @@ func TestAuthenticate_MissingAccessToken(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+	client, err := NewClient(testAPIKey, server.URL, WithHTTPClient(server.Client()))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -129,7 +129,7 @@ func TestAuthenticate_InvalidExpiration(t *testing.T) {
 	}))
 	defer server.Close()
 
-	_, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+	_, err := NewClient(testAPIKey, server.URL, WithHTTPClient(server.Client()))
 	if err == nil {
 		t.Fatal("expected error for invalid expiration")
 	}
@@ -167,7 +167,7 @@ func TestAuthenticate_HTTPError(t *testing.T) {
 			}))
 			defer server.Close()
 
-			_, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+			_, err := NewClient(testAPIKey, server.URL, WithHTTPClient(server.Client()))
 			if err == nil {
 				t.Fatalf("expected error for status %d", tt.statusCode)
 			}
@@ -212,7 +212,7 @@ func TestAuthenticate_TokenCaching(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+	client, err := NewClient(testAPIKey, server.URL, WithHTTPClient(server.Client()))
 	if err != nil {
 		t.Fatalf("new client: %v", err)
 	}
@@ -257,7 +257,7 @@ func TestAuthenticate_TokenExpiration(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+	client, err := NewClient(testAPIKey, server.URL, WithHTTPClient(server.Client()))
 	if err != nil {
 		t.Fatalf("new client: %v", err)
 	}
@@ -310,7 +310,7 @@ func TestAuthenticate_Concurrent(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+	client, err := NewClient(testAPIKey, server.URL, WithHTTPClient(server.Client()))
 	if err != nil {
 		t.Fatalf("new client: %v", err)
 	}
@@ -372,7 +372,7 @@ func TestAuthenticate_ContextCancellation(t *testing.T) {
 	// Create client with custom HTTP client that has short timeout
 	httpClient := &http.Client{Timeout: 10 * time.Millisecond}
 
-	_, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(httpClient))
+	_, err := NewClient(testAPIKey, server.URL, WithHTTPClient(httpClient))
 	if err == nil {
 		t.Fatal("expected timeout error")
 	}
@@ -395,7 +395,7 @@ func TestAuthenticate_SuccessFalse(t *testing.T) {
 	}))
 	defer server.Close()
 
-	_, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+	_, err := NewClient(testAPIKey, server.URL, WithHTTPClient(server.Client()))
 	if err == nil {
 		t.Fatal("expected error when success is false")
 	}
@@ -426,7 +426,7 @@ func TestAuthenticate_ExpiryWithSafetyMargin(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+	client, err := NewClient(testAPIKey, server.URL, WithHTTPClient(server.Client()))
 	if err != nil {
 		t.Fatalf("new client: %v", err)
 	}

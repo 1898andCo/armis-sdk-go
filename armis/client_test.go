@@ -34,11 +34,23 @@ func TestNewClient(t *testing.T) {
 func TestNewClientRequiresAPIKey(t *testing.T) {
 	t.Parallel()
 
-	c, err := NewClient("")
+	c, err := NewClient("", "https://example.com")
 	if !errors.Is(err, ErrNoAPIKey) {
 		t.Fatalf("expected ErrNoAPIKey, got %v", err)
 	}
 	if c != nil {
 		t.Fatalf("expected nil client when no API key provided")
+	}
+}
+
+func TestNewClientRequiresAPIURL(t *testing.T) {
+	t.Parallel()
+
+	c, err := NewClient("test-key", "")
+	if !errors.Is(err, ErrNoAPIURL) {
+		t.Fatalf("expected ErrNoAPIURL, got %v", err)
+	}
+	if c != nil {
+		t.Fatalf("expected nil client when no API URL provided")
 	}
 }

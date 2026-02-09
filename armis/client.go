@@ -17,7 +17,6 @@ import (
 
 // Defaults used when a caller omits configuration.
 const (
-	defaultAPIURL     = "https://api.armis.com"
 	defaultAPIVersion = "v1"
 )
 
@@ -78,14 +77,10 @@ func (c *Client) UserID() int {
 //
 // The function immediately performs authentication so the returned client is
 // ready for use.
-func NewClient(apiKey string, opts ...Option) (*Client, error) {
-	if apiKey == "" {
-		return nil, ErrNoAPIKey
-	}
-
+func NewClient(apiKey string, apiURL string, opts ...Option) (*Client, error) {
 	cfg := &Config{
 		APIKey:     apiKey,
-		APIURL:     defaultAPIURL,
+		APIURL:     apiURL,
 		apiVersion: defaultAPIVersion,
 		HTTPClient: &http.Client{Timeout: 30 * time.Second},
 	}
@@ -100,11 +95,48 @@ func NewClient(apiKey string, opts ...Option) (*Client, error) {
 		httpClient: cfg.HTTPClient,
 	}
 
+	if err := c.validateClient(); err != nil {
+		return nil, err
+	}
+
 	if err := c.authenticate(context.Background()); err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrAuthFailed, err)
 	}
 
 	return c, nil
+}
+
+// validateClient checks that the Client is in a usable state.
+func (c *Client) validateClient() error {
+	if c.apiKey == "" {
+		return ErrNoAPIKey
+	}
+
+	if c.apiURL == "" {
+		return ErrNoAPIURL
+	}
+
+	if c.httpClient == nil {
+		return ErrNoHTTPClient
+	}
+	return nil
+}
+
+// validateRequest checks that the request parameters are valid.
+func (c *Client) validateRequest(ctx context.Context, method, path string) error {
+	if ctx == nil {
+		return ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	if method == "" {
+		return ErrEmptyMethod
+	}
+	if path == "" {
+		return ErrEmptyPath
+	}
+	return nil
 }
 
 // APIError represents a non-2xx response from Armis. Code and Body are exposed
@@ -124,6 +156,13 @@ func (e *APIError) Error() string {
 // headers. The path should already include the API version prefix (e.g.
 // "/v1/devices").
 func (c *Client) newRequest(ctx context.Context, method, path string, body io.Reader) (*http.Request, error) {
+	if err := c.validateRequest(ctx, method, path); err != nil {
+		return nil, err
+	}
+	if err := c.validateClient(); err != nil {
+		return nil, err
+	}
+
 	req, err := http.NewRequestWithContext(ctx, method, c.apiURL+path, body)
 	if err != nil {
 		return nil, err
