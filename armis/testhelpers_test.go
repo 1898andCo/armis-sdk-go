@@ -53,7 +53,7 @@ func newTestClient(t *testing.T, handlers map[string]http.HandlerFunc) (*Client,
 		handler(w, r)
 	}))
 
-	client, err := NewClient(testAPIKey, WithAPIURL(server.URL), WithHTTPClient(server.Client()))
+	client, err := NewClient(testAPIKey, server.URL, WithHTTPClient(server.Client()))
 	if err != nil {
 		server.Close()
 		t.Fatalf("new client: %v", err)

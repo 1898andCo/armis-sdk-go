@@ -6,6 +6,7 @@
 package armis
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -16,7 +17,6 @@ import (
 
 // Defaults used when a caller omits configuration.
 const (
-	defaultAPIURL     = "https://api.armis.com"
 	defaultAPIVersion = "v1"
 )
 
@@ -77,14 +77,10 @@ func (c *Client) UserID() int {
 //
 // The function immediately performs authentication so the returned client is
 // ready for use.
-func NewClient(apiKey string, opts ...Option) (*Client, error) {
-	if apiKey == "" {
-		return nil, ErrNoAPIKey
-	}
-
+func NewClient(apiKey string, apiURL string, opts ...Option) (*Client, error) {
 	cfg := &Config{
 		APIKey:     apiKey,
-		APIURL:     defaultAPIURL,
+		APIURL:     apiURL,
 		apiVersion: defaultAPIVersion,
 		HTTPClient: &http.Client{Timeout: 30 * time.Second},
 	}
@@ -99,11 +95,48 @@ func NewClient(apiKey string, opts ...Option) (*Client, error) {
 		httpClient: cfg.HTTPClient,
 	}
 
+	if err := c.validateClient(); err != nil {
+		return nil, err
+	}
+
 	if err := c.authenticate(context.Background()); err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrAuthFailed, err)
 	}
 
 	return c, nil
+}
+
+// validateClient checks that the Client is in a usable state.
+func (c *Client) validateClient() error {
+	if c.apiKey == "" {
+		return ErrNoAPIKey
+	}
+
+	if c.apiURL == "" {
+		return ErrNoAPIURL
+	}
+
+	if c.httpClient == nil {
+		return ErrNoHTTPClient
+	}
+	return nil
+}
+
+// validateRequest checks that the request parameters are valid.
+func (c *Client) validateRequest(ctx context.Context, method, path string) error {
+	if ctx == nil {
+		return ErrNilContext
+	}
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	if method == "" {
+		return ErrEmptyMethod
+	}
+	if path == "" {
+		return ErrEmptyPath
+	}
+	return nil
 }
 
 // APIError represents a non-2xx response from Armis. Code and Body are exposed
@@ -123,6 +156,13 @@ func (e *APIError) Error() string {
 // headers. The path should already include the API version prefix (e.g.
 // "/v1/devices").
 func (c *Client) newRequest(ctx context.Context, method, path string, body io.Reader) (*http.Request, error) {
+	if err := c.validateRequest(ctx, method, path); err != nil {
+		return nil, err
+	}
+	if err := c.validateClient(); err != nil {
+		return nil, err
+	}
+
 	req, err := http.NewRequestWithContext(ctx, method, c.apiURL+path, body)
 	if err != nil {
 		return nil, err
@@ -155,8 +195,28 @@ func (c *Client) newRequest(ctx context.Context, method, path string, body io.Re
 }
 
 // doRequest executes the HTTP request and returns the response body for 2xx
-// codes or an *APIError otherwise.
-func (c *Client) doRequest(req *http.Request) ([]byte, error) {
+// codes or an *APIError otherwise. It automatically retries once on 401
+// Unauthorized by refreshing the access token.
+func (c *Client) doRequest(ctx context.Context, req *http.Request) ([]byte, error) {
+	return c.doRequestWithRetry(ctx, req, true)
+}
+
+// doRequestWithRetry is the internal implementation that tracks whether a
+// retry is allowed. This prevents infinite retry loops on persistent 401s.
+func (c *Client) doRequestWithRetry(ctx context.Context, req *http.Request, canRetry bool) ([]byte, error) {
+	// Buffer the request body so we can replay it on retry. This is necessary
+	// because the body reader is consumed during the first attempt.
+	var bodyBytes []byte
+	if req.Body != nil {
+		var err error
+		bodyBytes, err = io.ReadAll(req.Body)
+		if err != nil {
+			return nil, err
+		}
+		req.Body.Close()
+		req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
+	}
+
 	res, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -166,6 +226,21 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if res.StatusCode == http.StatusUnauthorized && canRetry {
+		// Force token refresh and retry once
+		if err := c.authenticate(ctx); err != nil {
+			return nil, fmt.Errorf("%w: %v", ErrAuthFailed, err)
+		}
+		c.mu.RLock()
+		req.Header.Set("Authorization", c.accessToken)
+		c.mu.RUnlock()
+		// Reset the request body for the retry attempt
+		if bodyBytes != nil {
+			req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
+		}
+		return c.doRequestWithRetry(ctx, req, false)
 	}
 
 	if res.StatusCode >= 200 && res.StatusCode < 300 {

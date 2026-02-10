@@ -9,12 +9,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strings"
 )
 
 // GetCollectorByID retrieves a single collector from Armis using the collector's ID.
 func (c *Client) GetCollectorByID(ctx context.Context, collectorID string) (*CollectorSettings, error) {
-	if collectorID == "" {
-		return nil, fmt.Errorf("%w", ErrCollectorID)
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
+	if strings.TrimSpace(collectorID) == "" {
+		return nil, ErrCollectorID
 	}
 
 	// URL encode the collector ID
@@ -27,7 +36,7 @@ func (c *Client) GetCollectorByID(ctx context.Context, collectorID string) (*Col
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch collector: %w", err)
 	}
@@ -47,6 +56,14 @@ func (c *Client) GetCollectorByID(ctx context.Context, collectorID string) (*Col
 
 // GetCollectors retrieves all collectors from Armis.
 func (c *Client) GetCollectors(ctx context.Context) ([]CollectorSettings, error) {
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	// Create a new request
 	req, err := c.newRequest(ctx, "GET", fmt.Sprintf("/api/%s/collectors/", c.apiVersion), nil)
 	if err != nil {
@@ -54,7 +71,7 @@ func (c *Client) GetCollectors(ctx context.Context) ([]CollectorSettings, error)
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch collectors: %w", err)
 	}
@@ -74,12 +91,20 @@ func (c *Client) GetCollectors(ctx context.Context) ([]CollectorSettings, error)
 
 // CreateCollector creates a new collector in Armis.
 func (c *Client) CreateCollector(ctx context.Context, collector CreateCollectorSettings) (*NewCollectorSettings, error) {
-	if collector.Name == "" {
-		return nil, fmt.Errorf("%w", ErrCollectorName)
+	if ctx == nil {
+		return nil, ErrNilContext
 	}
 
-	if collector.DeploymentType == "" {
-		return nil, fmt.Errorf("%w", ErrCollectorType)
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
+	if strings.TrimSpace(collector.Name) == "" {
+		return nil, ErrCollectorName
+	}
+
+	if strings.TrimSpace(collector.DeploymentType) == "" {
+		return nil, ErrCollectorType
 	}
 
 	collectorData, err := json.Marshal(collector)
@@ -94,7 +119,7 @@ func (c *Client) CreateCollector(ctx context.Context, collector CreateCollectorS
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create collector: %w", err)
 	}
@@ -114,16 +139,24 @@ func (c *Client) CreateCollector(ctx context.Context, collector CreateCollectorS
 
 // UpdateCollector updates an existing collector in Armis.
 func (c *Client) UpdateCollector(ctx context.Context, collectorID string, collector UpdateCollectorSettings) (*CollectorSettings, error) {
-	if collectorID == "" {
-		return nil, fmt.Errorf("%w", ErrCollectorID)
+	if ctx == nil {
+		return nil, ErrNilContext
 	}
 
-	if collector.Name == "" {
-		return nil, fmt.Errorf("%w", ErrCollectorName)
+	if err := ctx.Err(); err != nil {
+		return nil, err
 	}
 
-	if collector.DeploymentType == "" {
-		return nil, fmt.Errorf("%w", ErrCollectorType)
+	if strings.TrimSpace(collectorID) == "" {
+		return nil, ErrCollectorID
+	}
+
+	if strings.TrimSpace(collector.Name) == "" {
+		return nil, ErrCollectorName
+	}
+
+	if strings.TrimSpace(collector.DeploymentType) == "" {
+		return nil, ErrCollectorType
 	}
 
 	collectorData, err := json.Marshal(collector)
@@ -141,7 +174,7 @@ func (c *Client) UpdateCollector(ctx context.Context, collectorID string, collec
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update collector: %w", err)
 	}
@@ -161,8 +194,16 @@ func (c *Client) UpdateCollector(ctx context.Context, collectorID string, collec
 
 // DeleteCollector removes a collector from Armis.
 func (c *Client) DeleteCollector(ctx context.Context, collectorID string) (bool, error) {
-	if collectorID == "" {
-		return false, fmt.Errorf("%w", ErrCollectorID)
+	if ctx == nil {
+		return false, ErrNilContext
+	}
+
+	if err := ctx.Err(); err != nil {
+		return false, err
+	}
+
+	if strings.TrimSpace(collectorID) == "" {
+		return false, ErrCollectorID
 	}
 
 	// URL encode the collector ID
@@ -175,7 +216,7 @@ func (c *Client) DeleteCollector(ctx context.Context, collectorID string) (bool,
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return false, fmt.Errorf("failed to delete collector: %w", err)
 	}

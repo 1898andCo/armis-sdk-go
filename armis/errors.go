@@ -11,8 +11,13 @@ var (
 	ErrGetKey       = errors.New("failed to get API key")
 	ErrGetURL       = errors.New("failed to get API URL")
 	ErrNoAPIKey     = errors.New("missing API key")
+	ErrNoAPIURL     = errors.New("missing API URL")
 	ErrAuthFailed   = errors.New("failed to authenticate")
 	ErrHTTPResponse = errors.New("HTTP response error")
+	ErrNoHTTPClient = errors.New("missing HTTP client")
+	ErrNilContext   = errors.New("context cannot be nil")
+	ErrEmptyMethod  = errors.New("HTTP method cannot be empty")
+	ErrEmptyPath    = errors.New("request path cannot be empty")
 
 	// Collector errors.
 	ErrCollectorID   = errors.New("collector ID cannot be empty")

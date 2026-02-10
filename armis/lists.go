@@ -11,6 +11,14 @@ import (
 
 // GetLists retrieves all lists from Armis.
 func (c *Client) GetLists(ctx context.Context) ([]ListSettings, error) {
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	// Create a new request
 	req, err := c.newRequest(ctx, "GET", fmt.Sprintf("/api/%s/lists/", c.apiVersion), nil)
 	if err != nil {
@@ -18,7 +26,7 @@ func (c *Client) GetLists(ctx context.Context) ([]ListSettings, error) {
 	}
 
 	// Perform the request
-	res, err := c.doRequest(req)
+	res, err := c.doRequest(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch Lists: %w", err)
 	}
