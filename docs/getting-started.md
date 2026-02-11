@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-go get github.com/1898andCo/armis-sdk-go
+go get github.com/1898andCo/armis-sdk-go/v2
 ```
 
 ## Quick Start
@@ -17,7 +17,7 @@ import (
     "log"
     "os"
 
-    "github.com/1898andCo/armis-sdk-go/armis"
+    "github.com/1898andCo/armis-sdk-go/v2/armis"
 )
 
 func main() {
