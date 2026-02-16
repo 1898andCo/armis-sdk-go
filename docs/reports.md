@@ -1,6 +1,6 @@
 # Reports
 
-Access scheduled reports in Armis.
+Create, access, and manage scheduled reports in Armis.
 
 ## List All Reports
 
@@ -41,6 +41,49 @@ if report.IsScheduled {
 }
 ```
 
+## Create a Report
+
+```go
+report := armis.CreateReportRequest{
+    ReportName: "Critical Vulnerabilities Report",
+    ASQ:        "in:vulnerabilities severity:critical",
+    ExportConfiguration: armis.ExportConfiguration{
+        Columns: armis.ExportColumns{
+            Vulnerabilities: []string{"name", "severity", "cveId", "affectedDevices"},
+        },
+    },
+    Schedule: armis.CreateSchedule{
+        Email:            []string{"security@example.com"},
+        RepeatAmount:     "1",
+        RepeatUnit:       "week",
+        TimeOfDay:        "09:00",
+        Timezone:         "America/New_York",
+        Weekdays:         []string{"monday"},
+        ReportFileFormat: "csv",
+    },
+}
+
+created, err := client.CreateReport(ctx, report)
+if err != nil {
+    log.Fatal(err)
+}
+
+fmt.Printf("Created report: %s (ID: %d)\n", created.ReportName, created.ID)
+```
+
+## Delete a Report
+
+```go
+success, err := client.DeleteReport(ctx, "123")
+if err != nil {
+    log.Fatal(err)
+}
+
+if success {
+    fmt.Println("Report deleted")
+}
+```
+
 ## Report Fields
 
 | Field | Description |
@@ -63,3 +106,26 @@ if report.IsScheduled {
 | `Weekdays` | Days of week to run |
 | `Email` | Email recipients |
 | `ReportFileFormat` | Output format |
+
+## Create Report Request Fields
+
+| Field | Description |
+|-------|-------------|
+| `ReportName` | Name of the report (required) |
+| `ASQ` | AQL query for the report (required) |
+| `EmailSubject` | Custom email subject for scheduled reports |
+| `ExportConfiguration` | Columns to include in exports |
+| `Schedule` | Schedule configuration for recurring reports |
+
+## Export Configuration
+
+| Field | Description |
+|-------|-------------|
+| `Columns.Devices` | Device columns to export |
+| `Columns.Vulnerabilities` | Vulnerability columns to export |
+| `Columns.Activities` | Activity columns to export |
+
+## Validation Rules
+
+- ReportName is required
+- ASQ (query) is required
