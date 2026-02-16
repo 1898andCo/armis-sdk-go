@@ -44,3 +44,47 @@ type Schedule struct {
 	Timezone         string   `json:"timezone,omitempty"`
 	Weekdays         []string `json:"weekdays,omitempty"`
 }
+
+// CreateReportRequest represents the request payload for creating a new report.
+type CreateReportRequest struct {
+	ASQ                 string              `json:"asq"`
+	EmailSubject        string              `json:"emailSubject,omitempty"`
+	ExportConfiguration ExportConfiguration `json:"exportConfiguration,omitempty"`
+	ReportName          string              `json:"reportName"`
+	Schedule            CreateSchedule      `json:"schedule,omitempty"`
+}
+
+// ExportConfiguration represents the export configuration for a report.
+type ExportConfiguration struct {
+	Columns ExportColumns `json:"columns,omitempty"`
+}
+
+// ExportColumns represents the columns to export for different entity types.
+type ExportColumns struct {
+	Devices         []string `json:"devices,omitempty"`
+	Vulnerabilities []string `json:"vulnerabilities,omitempty"`
+	Activities      []string `json:"activities,omitempty"`
+}
+
+// CreateSchedule represents the schedule configuration when creating a report.
+// RepeatAmount is a string in the request payload (unlike Schedule which uses float64 for responses).
+type CreateSchedule struct {
+	Email            []string `json:"email,omitempty"`
+	RepeatAmount     string   `json:"repeatAmount,omitempty"`
+	RepeatUnit       string   `json:"repeatUnit,omitempty"`
+	ReportFileFormat string   `json:"reportFileFormat,omitempty"`
+	TimeOfDay        string   `json:"timeOfDay,omitempty"`
+	Timezone         string   `json:"timezone,omitempty"`
+	Weekdays         []string `json:"weekdays,omitempty"`
+}
+
+// CreateReportResponse represents the API response for creating a report.
+type CreateReportResponse struct {
+	Data    Report `json:"data"`
+	Success bool   `json:"success,omitempty"`
+}
+
+// DeleteReportResponse represents the API response for deleting a report.
+type DeleteReportResponse struct {
+	Success bool `json:"success"`
+}
