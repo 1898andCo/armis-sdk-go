@@ -199,3 +199,179 @@ func TestGetReports_EmptyList(t *testing.T) {
 		t.Fatalf("expected 0 reports, got %d", len(res))
 	}
 }
+
+func TestCreateReport(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, map[string]http.HandlerFunc{
+		"/api/v1/reports/": func(w http.ResponseWriter, r *http.Request) {
+			assertAuthHeader(t, r)
+			if r.Method != http.MethodPost {
+				t.Fatalf("expected POST, got %s", r.Method)
+			}
+			respondJSON(t, w, http.StatusOK, map[string]any{
+				"data": map[string]any{
+					"id":           42,
+					"reportName":   "My Report",
+					"reportType":   "DEVICE",
+					"asq":          "in:devices timeFrame:\"1 Day\"",
+					"creationTime": "2024-01-15T15:00:00Z",
+					"isScheduled":  true,
+					"schedule": map[string]any{
+						"email":            []string{"test@armis.com"},
+						"repeatAmount":     2,
+						"repeatUnit":       "Days",
+						"reportFileFormat": "csv",
+						"timeOfDay":        "15:00",
+						"timezone":         "Asia/Jerusalem",
+						"weekdays":         []string{"Monday"},
+					},
+				},
+				"success": true,
+			})
+		},
+	})
+	defer cleanup()
+
+	req := CreateReportRequest{
+		ASQ:          "in:devices timeFrame:\"1 Day\"",
+		EmailSubject: "Subject",
+		ExportConfiguration: ExportConfiguration{
+			Columns: ExportColumns{
+				Devices: []string{"Site", "Type", "Category"},
+			},
+		},
+		ReportName: "My Report",
+		Schedule: CreateSchedule{
+			Email:            []string{"test@armis.com"},
+			RepeatAmount:     "2",
+			RepeatUnit:       "Days",
+			ReportFileFormat: "csv",
+			TimeOfDay:        "15:00",
+			Timezone:         "Asia/Jerusalem",
+			Weekdays:         []string{"Monday"},
+		},
+	}
+
+	res, err := client.CreateReport(context.Background(), req)
+	if err != nil {
+		t.Fatalf("create report: %v", err)
+	}
+	if res.ID != 42 {
+		t.Fatalf("expected report ID 42, got %d", res.ID)
+	}
+	if res.ReportName != "My Report" {
+		t.Fatalf("unexpected report name: %s", res.ReportName)
+	}
+	if res.Asq != "in:devices timeFrame:\"1 Day\"" {
+		t.Fatalf("unexpected ASQ: %s", res.Asq)
+	}
+	if !res.IsScheduled {
+		t.Fatal("expected report to be scheduled")
+	}
+}
+
+func TestCreateReport_EmptyName(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, nil)
+	defer cleanup()
+
+	req := CreateReportRequest{
+		ASQ:        "in:devices",
+		ReportName: "",
+	}
+
+	_, err := client.CreateReport(context.Background(), req)
+	if err == nil {
+		t.Fatal("expected error for empty report name")
+	}
+	if !errors.Is(err, ErrReportName) {
+		t.Fatalf("expected ErrReportName, got: %v", err)
+	}
+}
+
+func TestCreateReport_EmptyASQ(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, nil)
+	defer cleanup()
+
+	req := CreateReportRequest{
+		ASQ:        "",
+		ReportName: "My Report",
+	}
+
+	_, err := client.CreateReport(context.Background(), req)
+	if err == nil {
+		t.Fatal("expected error for empty ASQ")
+	}
+	if !errors.Is(err, ErrReportASQ) {
+		t.Fatalf("expected ErrReportASQ, got: %v", err)
+	}
+}
+
+func TestDeleteReport(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, map[string]http.HandlerFunc{
+		"/api/v1/reports/42/": func(w http.ResponseWriter, r *http.Request) {
+			assertAuthHeader(t, r)
+			if r.Method != http.MethodDelete {
+				t.Fatalf("expected DELETE, got %s", r.Method)
+			}
+			respondJSON(t, w, http.StatusOK, map[string]any{
+				"success": true,
+			})
+		},
+	})
+	defer cleanup()
+
+	success, err := client.DeleteReport(context.Background(), "42")
+	if err != nil {
+		t.Fatalf("delete report: %v", err)
+	}
+	if !success {
+		t.Fatal("expected success to be true")
+	}
+}
+
+func TestDeleteReport_EmptyID(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, nil)
+	defer cleanup()
+
+	_, err := client.DeleteReport(context.Background(), "")
+	if err == nil {
+		t.Fatal("expected error for empty report ID")
+	}
+	if !errors.Is(err, ErrReportID) {
+		t.Fatalf("expected ErrReportID, got: %v", err)
+	}
+}
+
+func TestDeleteReport_URLEncoding(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, map[string]http.HandlerFunc{
+		"/api/v1/reports/report%2Fwith%2Fslashes/": func(w http.ResponseWriter, r *http.Request) {
+			assertAuthHeader(t, r)
+			if r.Method != http.MethodDelete {
+				t.Fatalf("expected DELETE, got %s", r.Method)
+			}
+			respondJSON(t, w, http.StatusOK, map[string]any{
+				"success": true,
+			})
+		},
+	})
+	defer cleanup()
+
+	success, err := client.DeleteReport(context.Background(), "report/with/slashes")
+	if err != nil {
+		t.Fatalf("delete report with special chars: %v", err)
+	}
+	if !success {
+		t.Fatal("expected success to be true")
+	}
+}

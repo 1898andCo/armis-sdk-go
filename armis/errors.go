@@ -48,5 +48,7 @@ var (
 	ErrSearchAQL = errors.New("search AQL cannot be empty")
 
 	// Report errors.
-	ErrReportID = errors.New("report ID cannot be empty")
+	ErrReportID   = errors.New("report ID cannot be empty")
+	ErrReportName = errors.New("report name cannot be empty")
+	ErrReportASQ  = errors.New("report ASQ query cannot be empty")
 )
