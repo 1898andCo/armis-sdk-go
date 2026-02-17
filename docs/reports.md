@@ -181,5 +181,12 @@ if success {
 
 ## Validation Rules
 
+### CreateReport
+
 - ReportName is required
 - ASQ (query) is required
+
+### UpdateReport
+
+- Report ID is required
+- All other fields are optional (PATCH supports partial updates)

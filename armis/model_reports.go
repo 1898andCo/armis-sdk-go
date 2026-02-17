@@ -91,16 +91,18 @@ type DeleteReportResponse struct {
 
 // UpdateReportRequest represents the request payload for updating a report.
 // All fields are optional since PATCH allows partial updates.
+// ExportConfiguration and Schedule use pointer types to enable true partial updates -
+// nil values are omitted from JSON, allowing updates to only the specified fields.
 type UpdateReportRequest struct {
-	ASQ                 string              `json:"asq,omitempty"`
-	EmailSubject        string              `json:"emailSubject,omitempty"`
-	ExportConfiguration ExportConfiguration `json:"exportConfiguration"`
-	ReportName          string              `json:"reportName,omitempty"`
-	Schedule            CreateSchedule      `json:"schedule"`
+	ASQ                 string               `json:"asq,omitempty"`
+	EmailSubject        string               `json:"emailSubject,omitempty"`
+	ExportConfiguration *ExportConfiguration `json:"exportConfiguration,omitempty"`
+	ReportName          string               `json:"reportName,omitempty"`
+	Schedule            *CreateSchedule      `json:"schedule,omitempty"`
 }
 
 // UpdateReportResponse represents the API response for updating a report.
 type UpdateReportResponse struct {
 	Data    Report `json:"data"`
-	Success bool   `json:"success,omitempty"`
+	Success bool   `json:"success"`
 }

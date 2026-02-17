@@ -5,6 +5,7 @@ package armis
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"testing"
@@ -412,13 +413,13 @@ func TestUpdateReport(t *testing.T) {
 	req := UpdateReportRequest{
 		ASQ:          "in:devices timeFrame:\"1 Day\"",
 		EmailSubject: "Updated Subject",
-		ExportConfiguration: ExportConfiguration{
+		ExportConfiguration: &ExportConfiguration{
 			Columns: ExportColumns{
 				Devices: []string{"Site", "Type", "Category"},
 			},
 		},
 		ReportName: "Updated Report",
-		Schedule: CreateSchedule{
+		Schedule: &CreateSchedule{
 			Email:            []string{"updated@armis.com"},
 			RepeatAmount:     "2",
 			RepeatUnit:       "Days",
@@ -456,6 +457,27 @@ func TestUpdateReport_PartialUpdate(t *testing.T) {
 			if r.Method != http.MethodPatch {
 				t.Fatalf("expected PATCH, got %s", r.Method)
 			}
+
+			// Verify that partial update only sends the specified fields
+			var body map[string]any
+			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+				t.Fatalf("failed to decode request body: %v", err)
+			}
+
+			// Check that only reportName is present (partial update should not include unset fields)
+			if _, ok := body["exportConfiguration"]; ok {
+				t.Fatal("partial update should not include exportConfiguration")
+			}
+			if _, ok := body["schedule"]; ok {
+				t.Fatal("partial update should not include schedule")
+			}
+			if _, ok := body["asq"]; ok {
+				t.Fatal("partial update should not include asq")
+			}
+			if _, ok := body["reportName"]; !ok {
+				t.Fatal("partial update should include reportName")
+			}
+
 			respondJSON(t, w, http.StatusOK, map[string]any{
 				"data": map[string]any{
 					"id":           42,
@@ -535,5 +557,35 @@ func TestUpdateReport_URLEncoding(t *testing.T) {
 	}
 	if res.ReportName != "Encoded Report Updated" {
 		t.Fatalf("unexpected report name: %s", res.ReportName)
+	}
+}
+
+func TestUpdateReport_APIError(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, map[string]http.HandlerFunc{
+		"/api/v1/reports/42/": func(w http.ResponseWriter, r *http.Request) {
+			assertAuthHeader(t, r)
+			if r.Method != http.MethodPatch {
+				t.Fatalf("expected PATCH, got %s", r.Method)
+			}
+			// Return HTTP 200 but with success: false
+			respondJSON(t, w, http.StatusOK, map[string]any{
+				"success": false,
+			})
+		},
+	})
+	defer cleanup()
+
+	req := UpdateReportRequest{
+		ReportName: "Updated Report",
+	}
+
+	_, err := client.UpdateReport(context.Background(), "42", req)
+	if err == nil {
+		t.Fatal("expected error for API returning success: false")
+	}
+	if !errors.Is(err, ErrHTTPResponse) {
+		t.Fatalf("expected ErrHTTPResponse, got: %v", err)
 	}
 }
