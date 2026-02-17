@@ -137,6 +137,53 @@ func (c *Client) CreateReport(ctx context.Context, report CreateReportRequest) (
 	return &response.Data, nil
 }
 
+// UpdateReport updates an existing report by its ID.
+func (c *Client) UpdateReport(ctx context.Context, reportID string, report UpdateReportRequest) (*Report, error) {
+	if ctx == nil {
+		return nil, ErrNilContext
+	}
+
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
+	if strings.TrimSpace(reportID) == "" {
+		return nil, ErrReportID
+	}
+
+	reportData, err := json.Marshal(report)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal report data: %w", err)
+	}
+
+	// URL encode the report ID
+	encodedReportID := url.QueryEscape(reportID)
+
+	// Create a new request
+	req, err := c.newRequest(ctx, "PATCH", fmt.Sprintf("/api/%s/reports/%s/", c.apiVersion, encodedReportID), bytes.NewReader(reportData))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request for UpdateReport: %w", err)
+	}
+
+	// Perform the request
+	res, err := c.doRequest(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update report: %w", err)
+	}
+
+	// Parse the response
+	var response UpdateReportResponse
+	if err := json.Unmarshal(res, &response); err != nil {
+		return nil, fmt.Errorf("failed to parse update report response: %w", err)
+	}
+
+	if !response.Success {
+		return nil, fmt.Errorf("%w: %+v", ErrHTTPResponse, response)
+	}
+
+	return &response.Data, nil
+}
+
 // DeleteReport deletes a report by its ID.
 func (c *Client) DeleteReport(ctx context.Context, reportID string) (bool, error) {
 	if ctx == nil {
