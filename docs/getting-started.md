@@ -23,7 +23,7 @@ import (
 func main() {
     client, err := armis.NewClient(
         os.Getenv("ARMIS_API_KEY"),
-        armis.WithAPIURL("https://your-instance.armis.com"),
+        os.Getenv("ARMIS_API_URL"), // e.g., "https://your-instance.armis.com"
     )
     if err != nil {
         log.Fatal(err)
@@ -38,15 +38,15 @@ func main() {
 }
 ```
 
-> **Note:** Replace `https://your-instance.armis.com` with your organization's Armis instance URL.
+> **Note:** Set `ARMIS_API_URL` to your organization's Armis instance URL (e.g., `https://your-instance.armis.com`).
 
 ## Configuration Options
 
 ```go
 client, err := armis.NewClient(
-    os.Getenv("ARMIS_API_KEY"),
-    armis.WithAPIURL("https://your-instance.armis.com"),  // Your Armis instance URL
-    armis.WithAPIVersion("v1"),                           // API version (default: v1)
+    os.Getenv("ARMIS_API_KEY"),                           // Required: API key
+    os.Getenv("ARMIS_API_URL"),                           // Required: Your Armis instance URL
+    armis.WithAPIVersion("v1"),                           // Optional: API version (default: v1)
 )
 ```
 

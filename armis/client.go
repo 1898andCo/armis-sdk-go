@@ -25,8 +25,7 @@ const (
 //
 // Example:
 //
-//	client, err := armis.NewClient("my-api-key",
-//	    armis.WithAPIURL("https://staging-api.armis.com"),
+//	client, err := armis.NewClient("my-api-key", "https://staging-api.armis.com",
 //	    armis.WithHTTPClient(&http.Client{Timeout: 10 * time.Second}))
 type Config struct {
 	APIKey     string
