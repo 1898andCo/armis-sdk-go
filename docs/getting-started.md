@@ -58,6 +58,6 @@ client, err := armis.NewClient(
 - [Collectors](collectors.md) - Manage data collectors
 - [Search](search.md) - Query devices and alerts with AQL
 - [Boundaries](boundaries.md) - View network boundaries
-- [Reports](reports.md) - Access scheduled reports
+- [Reports](reports.md) - Create, update, and manage scheduled reports
 - [Sites](sites.md) - View site information
 - [Lists](lists.md) - View custom lists

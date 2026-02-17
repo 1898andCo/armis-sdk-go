@@ -49,14 +49,14 @@ type Schedule struct {
 type CreateReportRequest struct {
 	ASQ                 string              `json:"asq"`
 	EmailSubject        string              `json:"emailSubject,omitempty"`
-	ExportConfiguration ExportConfiguration `json:"exportConfiguration,omitempty"`
+	ExportConfiguration ExportConfiguration `json:"exportConfiguration"`
 	ReportName          string              `json:"reportName"`
-	Schedule            CreateSchedule      `json:"schedule,omitempty"`
+	Schedule            CreateSchedule      `json:"schedule"`
 }
 
 // ExportConfiguration represents the export configuration for a report.
 type ExportConfiguration struct {
-	Columns ExportColumns `json:"columns,omitempty"`
+	Columns ExportColumns `json:"columns"`
 }
 
 // ExportColumns represents the columns to export for different entity types.
@@ -87,4 +87,20 @@ type CreateReportResponse struct {
 // DeleteReportResponse represents the API response for deleting a report.
 type DeleteReportResponse struct {
 	Success bool `json:"success"`
+}
+
+// UpdateReportRequest represents the request payload for updating a report.
+// All fields are optional since PATCH allows partial updates.
+type UpdateReportRequest struct {
+	ASQ                 string              `json:"asq,omitempty"`
+	EmailSubject        string              `json:"emailSubject,omitempty"`
+	ExportConfiguration ExportConfiguration `json:"exportConfiguration"`
+	ReportName          string              `json:"reportName,omitempty"`
+	Schedule            CreateSchedule      `json:"schedule"`
+}
+
+// UpdateReportResponse represents the API response for updating a report.
+type UpdateReportResponse struct {
+	Data    Report `json:"data"`
+	Success bool   `json:"success,omitempty"`
 }

@@ -375,3 +375,165 @@ func TestDeleteReport_URLEncoding(t *testing.T) {
 		t.Fatal("expected success to be true")
 	}
 }
+
+func TestUpdateReport(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, map[string]http.HandlerFunc{
+		"/api/v1/reports/42/": func(w http.ResponseWriter, r *http.Request) {
+			assertAuthHeader(t, r)
+			if r.Method != http.MethodPatch {
+				t.Fatalf("expected PATCH, got %s", r.Method)
+			}
+			respondJSON(t, w, http.StatusOK, map[string]any{
+				"data": map[string]any{
+					"id":           42,
+					"reportName":   "Updated Report",
+					"reportType":   "DEVICE",
+					"asq":          "in:devices timeFrame:\"1 Day\"",
+					"creationTime": "2024-01-15T15:00:00Z",
+					"isScheduled":  true,
+					"schedule": map[string]any{
+						"email":            []string{"updated@armis.com"},
+						"repeatAmount":     2,
+						"repeatUnit":       "Days",
+						"reportFileFormat": "csv",
+						"timeOfDay":        "15:00",
+						"timezone":         "Asia/Jerusalem",
+						"weekdays":         []string{"Monday"},
+					},
+				},
+				"success": true,
+			})
+		},
+	})
+	defer cleanup()
+
+	req := UpdateReportRequest{
+		ASQ:          "in:devices timeFrame:\"1 Day\"",
+		EmailSubject: "Updated Subject",
+		ExportConfiguration: ExportConfiguration{
+			Columns: ExportColumns{
+				Devices: []string{"Site", "Type", "Category"},
+			},
+		},
+		ReportName: "Updated Report",
+		Schedule: CreateSchedule{
+			Email:            []string{"updated@armis.com"},
+			RepeatAmount:     "2",
+			RepeatUnit:       "Days",
+			ReportFileFormat: "csv",
+			TimeOfDay:        "15:00",
+			Timezone:         "Asia/Jerusalem",
+			Weekdays:         []string{"Monday"},
+		},
+	}
+
+	res, err := client.UpdateReport(context.Background(), "42", req)
+	if err != nil {
+		t.Fatalf("update report: %v", err)
+	}
+	if res.ID != 42 {
+		t.Fatalf("expected report ID 42, got %d", res.ID)
+	}
+	if res.ReportName != "Updated Report" {
+		t.Fatalf("unexpected report name: %s", res.ReportName)
+	}
+	if res.Asq != "in:devices timeFrame:\"1 Day\"" {
+		t.Fatalf("unexpected ASQ: %s", res.Asq)
+	}
+	if !res.IsScheduled {
+		t.Fatal("expected report to be scheduled")
+	}
+}
+
+func TestUpdateReport_PartialUpdate(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, map[string]http.HandlerFunc{
+		"/api/v1/reports/42/": func(w http.ResponseWriter, r *http.Request) {
+			assertAuthHeader(t, r)
+			if r.Method != http.MethodPatch {
+				t.Fatalf("expected PATCH, got %s", r.Method)
+			}
+			respondJSON(t, w, http.StatusOK, map[string]any{
+				"data": map[string]any{
+					"id":           42,
+					"reportName":   "Only Name Updated",
+					"reportType":   "DEVICE",
+					"asq":          "in:devices",
+					"creationTime": "2024-01-15T15:00:00Z",
+					"isScheduled":  false,
+				},
+				"success": true,
+			})
+		},
+	})
+	defer cleanup()
+
+	// Only updating the report name
+	req := UpdateReportRequest{
+		ReportName: "Only Name Updated",
+	}
+
+	res, err := client.UpdateReport(context.Background(), "42", req)
+	if err != nil {
+		t.Fatalf("update report: %v", err)
+	}
+	if res.ReportName != "Only Name Updated" {
+		t.Fatalf("unexpected report name: %s", res.ReportName)
+	}
+}
+
+func TestUpdateReport_EmptyID(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, nil)
+	defer cleanup()
+
+	req := UpdateReportRequest{
+		ReportName: "Updated Report",
+	}
+
+	_, err := client.UpdateReport(context.Background(), "", req)
+	if err == nil {
+		t.Fatal("expected error for empty report ID")
+	}
+	if !errors.Is(err, ErrReportID) {
+		t.Fatalf("expected ErrReportID, got: %v", err)
+	}
+}
+
+func TestUpdateReport_URLEncoding(t *testing.T) {
+	t.Parallel()
+
+	client, cleanup := newTestClient(t, map[string]http.HandlerFunc{
+		"/api/v1/reports/report%2Fwith%2Fslashes/": func(w http.ResponseWriter, r *http.Request) {
+			assertAuthHeader(t, r)
+			if r.Method != http.MethodPatch {
+				t.Fatalf("expected PATCH, got %s", r.Method)
+			}
+			respondJSON(t, w, http.StatusOK, map[string]any{
+				"data": map[string]any{
+					"id":         999,
+					"reportName": "Encoded Report Updated",
+					"reportType": "DEVICE",
+				},
+				"success": true,
+			})
+		},
+	})
+	defer cleanup()
+
+	req := UpdateReportRequest{
+		ReportName: "Encoded Report Updated",
+	}
+
+	res, err := client.UpdateReport(context.Background(), "report/with/slashes", req)
+	if err != nil {
+		t.Fatalf("update report with special chars: %v", err)
+	}
+	if res.ReportName != "Encoded Report Updated" {
+		t.Fatalf("unexpected report name: %s", res.ReportName)
+	}
+}

@@ -71,6 +71,48 @@ if err != nil {
 fmt.Printf("Created report: %s (ID: %d)\n", created.ReportName, created.ID)
 ```
 
+## Update a Report
+
+```go
+update := armis.UpdateReportRequest{
+    ReportName:   "Updated Report Name",
+    ASQ:          "in:devices timeFrame:\"7 Days\"",
+    EmailSubject: "Weekly Device Report",
+    Schedule: armis.CreateSchedule{
+        Email:            []string{"team@example.com"},
+        RepeatAmount:     "1",
+        RepeatUnit:       "week",
+        TimeOfDay:        "08:00",
+        Timezone:         "America/New_York",
+        Weekdays:         []string{"monday"},
+        ReportFileFormat: "pdf",
+    },
+}
+
+updated, err := client.UpdateReport(ctx, "123", update)
+if err != nil {
+    log.Fatal(err)
+}
+
+fmt.Printf("Updated report: %s\n", updated.ReportName)
+```
+
+### Partial Updates
+
+Since UpdateReport uses PATCH, you can update only specific fields:
+
+```go
+// Update only the report name
+update := armis.UpdateReportRequest{
+    ReportName: "New Report Name",
+}
+
+updated, err := client.UpdateReport(ctx, "123", update)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
 ## Delete a Report
 
 ```go
@@ -116,6 +158,18 @@ if success {
 | `EmailSubject` | Custom email subject for scheduled reports |
 | `ExportConfiguration` | Columns to include in exports |
 | `Schedule` | Schedule configuration for recurring reports |
+
+## Update Report Request Fields
+
+| Field | Description |
+|-------|-------------|
+| `ReportName` | Name of the report (optional) |
+| `ASQ` | AQL query for the report (optional) |
+| `EmailSubject` | Custom email subject for scheduled reports (optional) |
+| `ExportConfiguration` | Columns to include in exports (optional) |
+| `Schedule` | Schedule configuration for recurring reports (optional) |
+
+> **Note:** All fields are optional for update requests since PATCH supports partial updates.
 
 ## Export Configuration
 
