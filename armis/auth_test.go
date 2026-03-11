@@ -197,6 +197,7 @@ func TestAuthenticate_TokenCaching(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.EscapedPath() == authPath {
 			authCallCount++
+			r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 			if err := r.ParseForm(); err != nil {
 				t.Fatalf("parse auth form: %v", err)
 			}
@@ -240,6 +241,7 @@ func TestAuthenticate_TokenExpiration(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.EscapedPath() == authPath {
 			authCallCount++
+			r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 			if err := r.ParseForm(); err != nil {
 				t.Fatalf("parse auth form: %v", err)
 			}
@@ -291,6 +293,7 @@ func TestAuthenticate_Concurrent(t *testing.T) {
 			authCallCount++
 			mu.Unlock()
 
+			r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 			if err := r.ParseForm(); err != nil {
 				t.Fatalf("parse auth form: %v", err)
 			}
@@ -409,6 +412,7 @@ func TestAuthenticate_ExpiryWithSafetyMargin(t *testing.T) {
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.EscapedPath() == authPath {
+			r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 			if err := r.ParseForm(); err != nil {
 				t.Fatalf("parse auth form: %v", err)
 			}
