@@ -76,7 +76,7 @@ jobs:
         uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v9
         id: golangci
         with:
-          version: v2.4
+          version: v2.11.2
           only-new-issues: true # Shows only issues introduced in the PR
           # Not all line numbers in diff may match the linter's line outputs
           # See: https://github.com/golangci/golangci-lint/issues/4376#issuecomment-1938874827
