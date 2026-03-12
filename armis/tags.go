@@ -21,12 +21,13 @@ func (c *Client) GetTags(ctx context.Context) ([]string, error) {
 	}
 
 	var allTags []string
+	from := 0
 
 	for {
 		path := fmt.Sprintf("/api/%s/tags/", c.apiVersion)
-		if len(allTags) > 0 {
+		if from > 0 {
 			params := url.Values{}
-			params.Set("from", strconv.Itoa(len(allTags)))
+			params.Set("from", strconv.Itoa(from))
 			path = fmt.Sprintf("/api/%s/tags/?%s", c.apiVersion, params.Encode())
 		}
 
@@ -58,6 +59,8 @@ func (c *Client) GetTags(ctx context.Context) ([]string, error) {
 		if response.Data.Next == nil {
 			break
 		}
+
+		from = *response.Data.Next
 	}
 
 	return allTags, nil
