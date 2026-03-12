@@ -216,7 +216,7 @@ func (c *Client) doRequestWithRetry(ctx context.Context, req *http.Request, canR
 		req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 	}
 
-	res, err := c.httpClient.Do(req)
+	res, err := c.httpClient.Do(req) //nolint:gosec // G704: URL is constructed from caller-configured apiURL, not user input
 	if err != nil {
 		return nil, err
 	}

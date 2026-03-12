@@ -26,6 +26,7 @@ func newTestClient(t *testing.T, handlers map[string]http.HandlerFunc) (*Client,
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.EscapedPath() == authPath {
+			r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 			if err := r.ParseForm(); err != nil {
 				t.Fatalf("parse auth form: %v", err)
 			}
