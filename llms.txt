@@ -12,7 +12,7 @@ The SDK is organized around a central `Client` type that handles authentication,
 
 ## Core Components
 
-- [Client](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/client.go): Main client struct with NewClient constructor and functional options (WithAPIURL, WithAPIVersion, WithHTTPClient)
+- [Client](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/client.go): Main client struct with NewClient(apiKey, apiURL, ...Option) constructor and functional options (WithAPIURL, WithAPIVersion, WithHTTPClient)
 - [Authentication](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/auth.go): API key authentication and token management
 - [Errors](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/errors.go): Sentinel errors for validation and API failures
 
@@ -27,6 +27,7 @@ The SDK is organized around a central `Client` type that handles authentication,
 - [Reports](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/reports.md): Manage scheduled reports (GetReports, GetReportByID, CreateReport, UpdateReport, DeleteReport)
 - [Sites](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/sites.md): View site information
 - [Lists](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/lists.md): View custom lists
+- [Tags](https://github.com/1898andCo/armis-sdk-go/blob/main/docs/tags.md): Retrieve all tags (GetTags)
 
 ## Source Code
 
@@ -39,6 +40,7 @@ The SDK is organized around a central `Client` type that handles authentication,
 - [armis/reports.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/reports.go): Report operations
 - [armis/sites.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/sites.go): Site information
 - [armis/lists.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/lists.go): Custom list retrieval
+- [armis/tags.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/tags.go): Tag retrieval
 
 ## Tests
 
@@ -54,6 +56,7 @@ The SDK is organized around a central `Client` type that handles authentication,
 - [armis/reports_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/reports_test.go): Report operation tests
 - [armis/sites_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/sites_test.go): Site information tests
 - [armis/lists_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/lists_test.go): Custom list retrieval tests
+- [armis/tags_test.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/tags_test.go): Tag retrieval tests
 
 ## Data Models
 
@@ -66,6 +69,7 @@ The SDK is organized around a central `Client` type that handles authentication,
 - [armis/model_reports.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_reports.go): Report types
 - [armis/model_sites.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_sites.go): Site types
 - [armis/model_lists.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_lists.go): List types
+- [armis/model_tags.go](https://github.com/1898andCo/armis-sdk-go/blob/main/armis/model_tags.go): Tag types (TagsAPIResponse, TagsData)
 
 ## Optional
 

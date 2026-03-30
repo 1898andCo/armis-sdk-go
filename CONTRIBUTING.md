@@ -18,8 +18,13 @@ Thank you for your interest in contributing to the Armis Go SDK!
 │   ├── model_*.go             # API request/response structs
 │   ├── *_test.go              # Unit tests
 │   └── ...                    # Resource-specific files (users.go, policies.go, etc.)
+├── docs/                       # Resource documentation
 ├── tools/                      # Development tooling
+├── Brewfile                    # Homebrew dependencies
+├── llms.txt                    # LLM-friendly project index
 ├── Makefile                    # Build and test commands
+├── README.md                   # Project overview and quick start
+├── SECURITY.md                 # Security policy and vulnerability reporting
 └── go.mod                      # Module definition
 ```
 
