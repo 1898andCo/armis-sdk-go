@@ -77,7 +77,7 @@ client, err := armis.NewClient(
     apiKey,                                               // Required: API key
     "https://your-instance.armis.com",                    // Required: API URL
     armis.WithAPIVersion("v1"),                           // Optional: API version (default: v1)
-    armis.WithHTTPClient(&http.Client{                    // Optional: Custom HTTP client
+    armis.WithHTTPClient(&http.Client{                    // Optional: Custom HTTP client (default: 30s timeout)
         Timeout: 60 * time.Second,
     }),
 )

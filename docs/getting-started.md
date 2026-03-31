@@ -61,3 +61,4 @@ client, err := armis.NewClient(
 - [Reports](reports.md) - Create, update, and manage scheduled reports
 - [Sites](sites.md) - View site information
 - [Lists](lists.md) - View custom lists
+- [Tags](tags.md) - Retrieve all tags

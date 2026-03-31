@@ -78,7 +78,7 @@ update := armis.UpdateReportRequest{
     ReportName:   "Updated Report Name",
     ASQ:          "in:devices timeFrame:\"7 Days\"",
     EmailSubject: "Weekly Device Report",
-    Schedule: armis.CreateSchedule{
+    Schedule: &armis.CreateSchedule{
         Email:            []string{"team@example.com"},
         RepeatAmount:     "1",
         RepeatUnit:       "week",
@@ -136,6 +136,8 @@ if success {
 | `Asq` | AQL query for the report |
 | `IsScheduled` | Whether the report runs on a schedule |
 | `CreationTime` | When the report was created |
+
+> **Note:** The response type `Schedule` uses `RepeatAmount float64` (the API returns a numeric value), while the request type `CreateSchedule` uses `RepeatAmount string`. When reading a report's schedule and writing it back in a create or update request, convert the float to a string. In `UpdateReportRequest`, the `Schedule` and `ExportConfiguration` fields are pointers (`*CreateSchedule`, `*ExportConfiguration`) to support true partial updates — use `&armis.CreateSchedule{...}` when setting them.
 
 ## Schedule Fields
 
