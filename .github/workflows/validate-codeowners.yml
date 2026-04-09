@@ -4,10 +4,18 @@ on:
 
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   validate-codeowners:
     runs-on: ubuntu-latest
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@f808768d1510423e83855289c910610ca9b43176 # v2.17.0
+      with:
+        egress-policy: audit
+
     - name: "Checkout source code at current commit"
       uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
       # Leave pinned at 0.7.1 until https://github.com/mszostok/codeowners-validator/issues/173 is resolved
