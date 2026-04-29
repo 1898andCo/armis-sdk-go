@@ -18,8 +18,7 @@ jobs:
 
     - name: "Checkout source code at current commit"
       uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
-      # Leave pinned at 0.7.1 until https://github.com/mszostok/codeowners-validator/issues/173 is resolved
-    - uses: mszostok/codeowners-validator@7f3f5e28c6d7b8dfae5731e54ce2272ca384592f # v0.7.4
+    - uses: step-security/codeowners-validator@073378e2c16714d69ac00356acebdb7505d82c7e # v0.7.4
       if: github.event.pull_request.head.repo.full_name == github.repository
       name: "Full check of CODEOWNERS"
       with:
@@ -31,8 +30,7 @@ jobs:
         checks: "syntax,duppatterns"
         # GitHub access token is required only if the `owners` check is enabled
         github_access_token: "${{ secrets.GITHUB_TOKEN }}"
-      # Leave pinned at 0.7.1 until https://github.com/mszostok/codeowners-validator/issues/173 is resolved
-    - uses: mszostok/codeowners-validator@7f3f5e28c6d7b8dfae5731e54ce2272ca384592f # v0.7.4
+    - uses: step-security/codeowners-validator@073378e2c16714d69ac00356acebdb7505d82c7e # v0.7.4
       if: github.event.pull_request.head.repo.full_name != github.repository
       name: "Syntax check of CODEOWNERS"
       with:
