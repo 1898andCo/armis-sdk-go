@@ -45,6 +45,7 @@ jobs:
             release-assets.githubusercontent.com:443
             proxy.golang.org:443
             sum.golang.org:443
+            storage.googleapis.com:443
 
       - name: Checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
@@ -103,6 +104,7 @@ jobs:
             release-assets.githubusercontent.com:443
             proxy.golang.org:443
             sum.golang.org:443
+            storage.googleapis.com:443
             golangci-lint.run:443
 
       - name: Check out code into the Go module directory
