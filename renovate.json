@@ -1,4 +1,5 @@
 {
+  "minimumReleaseAge": "3 days",
   "extends": [
     "config:recommended",
     ":ignoreUnstable"
