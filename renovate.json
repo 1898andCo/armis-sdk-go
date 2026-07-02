@@ -1,4 +1,5 @@
 {
+  "minimumReleaseAge": "3 days",
   "extends": [
     "config:recommended",
     ":ignoreUnstable"
@@ -35,7 +36,6 @@
     {
       "description": "Only update GitHub Actions when stable and aged",
       "matchManagers": ["github-actions"],
-      "minimumReleaseAge": "3 days",
       "allowedVersions": "!/-(alpha|beta|rc|test)/"
     }
   ],
