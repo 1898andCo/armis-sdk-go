@@ -228,7 +228,12 @@ func (c *Client) doRequestWithRetry(ctx context.Context, req *http.Request, canR
 	}
 
 	if res.StatusCode == http.StatusUnauthorized && canRetry {
-		// Force token refresh and retry once
+		// The server can reject a token before its local expiry: Armis keeps a
+		// single active token per secret key, so another consumer
+		// authenticating with the same key invalidates ours. Drop the cached
+		// token first so authenticate fetches a fresh one instead of
+		// early-returning on the unexpired cache, then retry once.
+		c.invalidateToken(req.Header.Get("Authorization"))
 		if err := c.authenticate(ctx); err != nil {
 			return nil, fmt.Errorf("%w: %v", ErrAuthFailed, err)
 		}

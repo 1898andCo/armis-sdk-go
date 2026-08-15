@@ -86,3 +86,20 @@ func (c *Client) authenticate(ctx context.Context) error {
 
 	return nil
 }
+
+// invalidateToken discards the cached access token so the next authenticate
+// call fetches a fresh one. Armis keeps a single active token per secret key,
+// so a token can be rejected server-side long before its local expiry when
+// another consumer authenticates with the same key. The staleToken guard makes
+// invalidation a no-op if a different (newer) token is already cached, which
+// keeps concurrent 401 handlers from discarding a token that a sibling
+// goroutine just obtained.
+func (c *Client) invalidateToken(staleToken string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if staleToken != "" && c.accessToken != staleToken {
+		return // a newer token is already in place
+	}
+	c.accessToken = ""
+	c.accessTokenExpires = time.Time{}
+}
