@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Harden the runner (Block egress)
-      uses: step-security/harden-runner@f808768d1510423e83855289c910610ca9b43176 # v2.17.0
+      uses: step-security/harden-runner@b09bb98e06d4d774595224525879c09bc6e98c40 # v2.20.1
       with:
         egress-policy: block
         allowed-endpoints: >
@@ -22,7 +22,7 @@ jobs:
           objects.githubusercontent.com:443
 
     - name: "Checkout source code at current commit"
-      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
     - uses: step-security/codeowners-validator@073378e2c16714d69ac00356acebdb7505d82c7e # v0.7.4
       if: github.event.pull_request.head.repo.full_name == github.repository
       name: "Full check of CODEOWNERS"
