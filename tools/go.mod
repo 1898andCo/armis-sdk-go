@@ -1,21 +1,21 @@
 module tools
 
-go 1.26.0
+go 1.26.7
 
 require github.com/hashicorp/copywrite v0.25.3
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7 // indirect
-	github.com/bmatcuk/doublestar/v4 v4.10.2 // indirect
+	github.com/bmatcuk/doublestar/v4 v4.10.4 // indirect
 	github.com/bradleyfalzon/ghinstallation/v2 v2.19.0 // indirect
-	github.com/cli/go-gh/v2 v2.16.1 // indirect
+	github.com/cli/go-gh/v2 v2.17.0 // indirect
 	github.com/cli/safeexec v1.0.1 // indirect
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/fsnotify/fsnotify v1.10.1 // indirect
 	github.com/go-openapi/errors v0.22.9 // indirect
-	github.com/go-openapi/strfmt v0.27.2 // indirect
+	github.com/go-openapi/strfmt v0.27.4 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
 	github.com/google/go-github/v92 v92.0.0 // indirect
@@ -28,10 +28,10 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.8.3 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
-	github.com/knadh/koanf/v2 v2.3.6 // indirect
-	github.com/mattn/go-colorable v0.1.15 // indirect
+	github.com/knadh/koanf/v2 v2.4.1 // indirect
+	github.com/mattn/go-colorable v0.1.16 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
-	github.com/mattn/go-runewidth v0.0.30 // indirect
+	github.com/mattn/go-runewidth v0.0.31 // indirect
 	github.com/mergestat/timediff v0.0.4 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
@@ -43,14 +43,14 @@ require (
 	github.com/samber/lo v1.53.0 // indirect
 	github.com/spf13/cobra v1.10.2 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
-	github.com/thanhpk/randstr v1.0.6 // indirect
-	go.mongodb.org/mongo-driver/v2 v2.9.1 // indirect
-	golang.org/x/crypto v0.57.0 // indirect
-	golang.org/x/net v0.59.0 // indirect
+	github.com/thanhpk/randstr v1.0.7 // indirect
+	go.mongodb.org/mongo-driver/v2 v2.9.2 // indirect
+	golang.org/x/crypto v0.58.0 // indirect
+	golang.org/x/net v0.62.0 // indirect
 	golang.org/x/oauth2 v0.37.0 // indirect
-	golang.org/x/sync v0.23.0 // indirect
-	golang.org/x/sys v0.48.0 // indirect
-	golang.org/x/term v0.46.0 // indirect
-	golang.org/x/text v0.42.0 // indirect
+	golang.org/x/sync v0.24.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/term v0.47.0 // indirect
+	golang.org/x/text v0.43.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
