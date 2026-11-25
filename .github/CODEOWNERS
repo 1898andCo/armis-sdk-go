@@ -4,4 +4,4 @@
 # Order is important: the last matching pattern has the highest precedence
 
 # These owners will be the default owners for everything
-*  @1898andCo/tf-provider-reviewers @1898andCo/iac-admins
+*  @RoseSecurity @1898andCo/tf-provider-reviewers @1898andCo/iac-admins
