@@ -46,5 +46,7 @@
     "renovate"
   ],
   "commitMessageAction": "chore",
-  "dependencyDashboard": true
+  "dependencyDashboard": {
+    "enabled": true
+  }
 }
