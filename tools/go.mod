@@ -6,7 +6,7 @@ require github.com/hashicorp/copywrite v0.25.3
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7 // indirect
-	github.com/bmatcuk/doublestar/v4 v4.10.4 // indirect
+	github.com/bmatcuk/doublestar/v4 v4.10.7 // indirect
 	github.com/bradleyfalzon/ghinstallation/v2 v2.19.0 // indirect
 	github.com/cli/go-gh/v2 v2.17.0 // indirect
 	github.com/cli/safeexec v1.0.1 // indirect
@@ -25,7 +25,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.25.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible // indirect
-	github.com/jedib0t/go-pretty/v6 v6.9.2 // indirect
+	github.com/jedib0t/go-pretty/v6 v6.9.3 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/knadh/koanf/v2 v2.4.1 // indirect
